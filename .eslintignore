@@ -1,0 +1,9 @@
+/build/
+/config/
+/dist/
+/*.js
+*/mock/
+/test/
+/src/assets/icon/
+/src/lib/
+/static/
