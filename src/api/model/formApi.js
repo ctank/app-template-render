@@ -12,5 +12,13 @@ export default {
       method: 'post',
       data
     })
+  },
+
+  getViewTemplate(data) {
+    return fetch({
+      url: '/view/getViewTemp',
+      method: 'post',
+      data
+    })
   }
 }

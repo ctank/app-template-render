@@ -11,29 +11,36 @@
     >
       <form-render
         :formData="formData"
-        :layouts="layouts"
-        :componentMap="componentMap"
+        :layouts="formTemp.layouts"
+        :componentMap="formTemp.componentMap"
         @change="handleValueChange"
         @getValue="handleValueGet"
       />
     </el-form>
     <div>{{ formData }}</div>
+    <div>
+      <view-render
+        :viewData="viewData"
+        :layouts="viewTemp.layouts"
+        :componentMap="viewTemp.componentMap"
+        @getInfo="handleInfo"
+      />
+    </div>
+    <div>{{ viewData }}</div>
   </div>
 </template>
 
 <script>
 import FormRender from './formComponents/render.vue'
+import ViewRender from './viewComponents/render.vue'
 import { isUndefined, isNull } from '@/utils/common'
 import { formApi } from '@/api'
 
 export default {
   name: 'IndexDemo',
-  components: { FormRender },
+  components: { FormRender, ViewRender },
   data() {
     return {
-      layouts: [],
-      componentMap: {},
-      config: {},
       formData: {
         demo: {
           test1: '11111',
@@ -59,20 +66,60 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      formTemp: { layouts: [], componentMap: {}, config: {} },
+
+      viewData: {
+        demo: [
+          {
+            date: '2016-05-03',
+            name: 'Tom',
+            address: 'No. 189, Grove St, Los Angeles'
+          },
+          {
+            date: '2016-05-02',
+            name: 'Tom2',
+            address: 'No. 189, Grove St, Los Angeles'
+          },
+          {
+            date: '2016-05-04',
+            name: 'Tom3',
+            address: 'No. 189, Grove St, Los Angeles'
+          },
+          {
+            date: '2016-05-01',
+            name: 'Tom4',
+            address: 'No. 189, Grove St, Los Angeles'
+          }
+        ],
+        search: {
+          radio1: '2',
+          radio2: 'c'
+        }
+      },
+      viewTemp: { layouts: [], componentMap: {}, config: {} }
     }
   },
   mounted() {
     console.log('mounted-demo1')
     this.getFormTemplate()
+    this.getViewTemplate()
   },
   methods: {
     async getFormTemplate() {
       const res = await formApi.getFormTemplate({
         api: 'test/api'
       })
-      this.layouts = res.data.layouts
-      this.componentMap = this.setComponentMap(res.data.layouts, res.data.components)
+      this.formTemp.layouts = res.data.layouts
+      this.formTemp.componentMap = this.setComponentMap(res.data.layouts, res.data.components)
+    },
+
+    async getViewTemplate() {
+      const res = await formApi.getViewTemplate({
+        api: 'test/api2'
+      })
+      this.viewTemp.layouts = res.data.layouts
+      this.viewTemp.componentMap = this.setComponentMap(res.data.layouts, res.data.components)
     },
 
     setComponentMap(layouts, components) {
@@ -91,7 +138,7 @@ export default {
     },
 
     handleValueChange(val, id) {
-      const component = this.componentMap[id]
+      const component = this.formTemp.componentMap[id]
       if (component) {
         const paths = component.fieldPath.split('/')
         if (paths.length === 1) {
@@ -140,6 +187,10 @@ export default {
           }
         ]
       }
+    },
+
+    handleInfo(data) {
+      console.log(111, data)
     }
   }
 }

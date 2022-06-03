@@ -16,10 +16,10 @@
     "lintFix": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^0.2.6",
+    "@element-plus/icons-vue": "^1.1.4",
     "axios": "^0.25.0",
     "core-js": "^3.20.3",
-    "element-plus": "^2.0.1",
+    "element-plus": "^2.2.0",
     "js-cookie": "2.2.0",
     "path-browserify": "1.0.1",
     "vue": "^3.2.29",

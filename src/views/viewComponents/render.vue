@@ -1,40 +1,37 @@
 <template>
-  <div>
-    <div v-for="(item, index) in layout" :key="index">
-      <anchored-heading
-        :formData="formData"
-        :component="components[item.key]"
+  <div class="component-render">
+    <div v-for="(item, index) in layouts" :key="`${item.id}-${index}`">
+      <view-component-render
+        v-if="getComponentDisplay(componentMap[item.id])"
+        :viewData="viewData"
+        :component="componentMap[item.id]"
+        :componentMap="componentMap"
         @change="handleValueChange"
-      ></anchored-heading>
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { h } from 'vue'
+import { getValueByPath, setValueByPath } from '@/utils/common'
 
 export default {
-  name: 'FormRender',
+  name: 'ViewRender',
   props: {
-    layout: {
+    layouts: {
       type: Array,
       default() {
         return []
       }
     },
-    components: {
+    componentMap: {
       type: Object,
       default() {
         return {}
       }
     },
-    config: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    formData: {
+    viewData: {
       type: Object,
       default() {
         return null
@@ -46,9 +43,8 @@ export default {
   },
   methods: {
     demo() {
-      console.log(111)
       const self = this
-      this.$App.component('anchored-heading', {
+      this.$App.component('view-component-render', {
         props: {
           component: {
             type: Object,
@@ -56,7 +52,13 @@ export default {
               return null
             }
           },
-          formData: {
+          componentMap: {
+            type: Object,
+            default() {
+              return {}
+            }
+          },
+          viewData: {
             type: Object,
             default() {
               return null
@@ -65,24 +67,13 @@ export default {
         },
         render() {
           if (this.component) {
-            let value = ''
-            if (this.formData && this.component.fieldPath) {
-              const paths = this.component.fieldPath.split('/')
-              for (let i = 0; i < paths.length; i++) {
-                if (value && value[paths[i]]) {
-                  value = value[paths[i]]
-                } else {
-                  value = this.formData[paths[i]]
-                }
-              }
-            }
             const render = require(`./${this.component.type}`).default
-
             // debugger
             return h(render, {
-              key: 'test-demo',
-              value,
-              ...this.component
+              componentMap: this.componentMap,
+              viewData: this.viewData,
+              ...this.component,
+              onBtnClick: self.handleBtnClick
             })
           }
 
@@ -90,8 +81,44 @@ export default {
         }
       })
     },
-    handleValueChange(val, id) {
-      this.$emit('change', val, id)
+    getComponentDisplay(item) {
+      let show = true
+
+      if (item.extras.usageCondition && item.extras.usageCondition.length) {
+        show = false
+        for (let i = 0; i < item.extras.usageCondition.length; i += 1) {
+          if (!show) {
+            for (let j = 0; j < item.extras.usageCondition[i].length; j += 1) {
+              const { field, value, logic } = item.extras.usageCondition[i][j]
+              const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
+              switch (logic) {
+                case '0':
+                  if (targetValue !== value) {
+                    show = true
+                  } else {
+                    show = false
+                  }
+                  break
+                case '1':
+                  if (targetValue === value) {
+                    show = true
+                  } else {
+                    show = false
+                  }
+                  break
+              }
+            }
+          }
+        }
+        if (!show) {
+          setValueByPath(this.formData, item.fieldPath, '')
+        }
+      }
+
+      return show
+    },
+    handleBtnClick(event, data) {
+      this.$emit(event, data)
     }
   }
 }
