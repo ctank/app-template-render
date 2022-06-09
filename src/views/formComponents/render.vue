@@ -1,14 +1,15 @@
 <template>
   <div class="component-render">
-    <div v-for="(item, index) in layouts" :key="`${item.id}-${index}`">
+    <template v-for="(item, index) in layouts">
       <component-render
         v-if="getComponentDisplay(componentMap[item.id])"
+        :key="`${item.id}-${index}`"
         :formData="formData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
         @change="handleValueChange"
       />
-    </div>
+    </template>
   </div>
 </template>
 
@@ -84,13 +85,12 @@ export default {
     },
     getComponentDisplay(item) {
       let show = true
-
-      if (item.extras.usageCondition && item.extras.usageCondition.length) {
+      if (item.extras.showConfig && item.extras.showConfig.length) {
         show = false
-        for (let i = 0; i < item.extras.usageCondition.length; i += 1) {
+        for (let i = 0; i < item.extras.showConfig.length; i += 1) {
           if (!show) {
-            for (let j = 0; j < item.extras.usageCondition[i].length; j += 1) {
-              const { field, value, logic } = item.extras.usageCondition[i][j]
+            for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
+              const { field, value, logic } = item.extras.showConfig[i][j]
               const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
               switch (logic) {
                 case '0':

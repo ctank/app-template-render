@@ -1,1 +1,1 @@
-# app-template-rander
+# app-template-render

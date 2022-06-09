@@ -23,6 +23,15 @@ const router = [
     component: () => import('@/views/demo.vue')
   },
   {
+    path: '/formTextBox',
+    name: 'formTextBox',
+    meta: {
+      isTab: true,
+      title: 'formTextBox'
+    },
+    component: () => import('@/views/formDemo/textbox.vue')
+  },
+  {
     path: '/:catchAll(.*)',
     name: '404',
     component: () => import('@/views/404.vue')

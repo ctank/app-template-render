@@ -15,32 +15,49 @@ export default {
         return ''
       }
     },
+    // 控件类型
+    type: {
+      type: String,
+      default() {
+        return ''
+      }
+    },
+    // 业务属性
     extras: {
       type: Object,
       default() {
         return {}
       }
     },
-
+    // 占位符
     placeholder: {
       type: String,
       default() {
         return '请输入'
       }
     },
-
+    // 验证规则
+    rules: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    // 字段路径
     fieldPath: {
       type: String,
       default() {
         return ''
       }
     },
+    // 控件集合
     componentMap: {
       type: Object,
       default() {
         return {}
       }
     },
+    // 数据
     formData: {
       type: Object,
       default() {
@@ -68,27 +85,8 @@ export default {
     validProp() {
       return this.fieldPath.replace(/\//g, '.')
     }
-  },
-  watch: {
-    // data() {}
-  },
-  methods: {
-    // getValueByPath(data, path) {
-    //   let value = ''
-    //   if (data && path) {
-    //     const paths = path.split('/')
-    //     for (let i = 0; i < paths.length; i++) {
-    //       if (value && value[paths[i]]) {
-    //         value = value[paths[i]]
-    //       } else {
-    //         value = data[paths[i]]
-    //       }
-    //     }
-    //   }
-    //   return value
-    // }
   }
 }
 </script>
 
-<style lang="less"></style>
+<style></style>

@@ -1,7 +1,8 @@
 <template>
   <div>
     <div>
-      <el-button @click="handleSpaPush">当前页面</el-button>
+      <el-button @click="handleSpaPush">demo</el-button>
+      <el-button @click="jumpDemo('formTextBox')">单行文本</el-button>
     </div>
     <div><img src="@/assets/images/demo.png" /></div>
     <el-select v-model="value" placeholder="请选择">
@@ -57,6 +58,9 @@ export default {
           test: 'test-spa'
         }
       })
+    },
+    jumpDemo(path) {
+      this.$router.push(path)
     }
   }
 }
