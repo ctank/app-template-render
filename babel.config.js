@@ -1,14 +1,23 @@
 module.exports = {
+  // 开启默认预设
   presets: [
     [
       '@babel/preset-env',
       {
-        useBuiltIns: 'usage', // 这里配置usage 会自动根据你使用的方法以及你配置的浏览器支持版本引入对于的方法。
-        corejs: '3.11.0' // 指定 corejs 版本
+        corejs: '3.11.0', // 指定 corejs 版本
+        modules: false // 关闭 esm 转化，统一交由 rollup 处理，防止冲突
       }
-    ]
+    ],
+    "@vue/babel-preset-jsx"
   ],
   plugins: [
-    '@vue/babel-plugin-jsx'
+    [
+      // 开启 babel 各依赖联动，由此插件负责自动导入 helper 辅助函数，从而形成沙箱 polyfill
+      '@babel/plugin-transform-runtime',
+      {
+        // corejs: { version: 3, proposals: true },
+        useESModules: true // 关闭 esm 转化，交由 rollup 处理，同上防止冲突
+      }
+    ]
   ]
 }
