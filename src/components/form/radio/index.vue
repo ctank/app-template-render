@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="title" :class="required ? 'is-required' : ''">
-    <el-radio-group v-model="value" @change="onChange">
+    <el-radio-group v-model="value">
       <el-radio
         v-for="(option, index) in showOptions"
         :key="`${index}-${option.value}`"
@@ -12,10 +12,11 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import { getValueByPath } from '../../../utils/common'
 import base from '../base.vue'
 
-export default {
+export default defineComponent({
   name: 'Radio',
   extends: base,
   props: {
@@ -67,16 +68,23 @@ export default {
   methods: {
     setDefaultValue() {
       if (!this.value) {
-        this.onChange(this.extras.options[0].value)
-      }
-    },
-    onChange(val) {
-      if (val !== this.value) {
-        this.$emit('change', val, this.id)
+        let value = this.extras.options[0].value
+        for (let i = 0; i < this.extras.options.length; i++) {
+          if (this.extras.options[i].isDefault) {
+            value = this.extras.options[i].value
+            break
+          }
+        }
+        this.onChange(value, this.id)
       }
     }
+    // onChange(val) {
+    //   if (val !== this.value) {
+    //     this.$emit('change', val, this.id)
+    //   }
+    // }
   }
-}
+})
 </script>
 
 <style></style>

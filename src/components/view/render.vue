@@ -86,12 +86,12 @@ export default {
                 break
             }
           },
-          render() {
+          render({ component, componentMap, viewData }) {
             if (this.renderComponent && component) {
               return h(this.renderComponent, {
-                componentMap: this.componentMap,
-                viewData: this.viewData,
-                ...this.component,
+                componentMap,
+                viewData,
+                ...component,
                 onChange: self.handleValueChange,
                 onGetValue: self.handleValueGet
               })

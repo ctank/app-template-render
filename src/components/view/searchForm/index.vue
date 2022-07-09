@@ -6,7 +6,6 @@
       label-width="100px"
       :model="value"
       inline
-      @keydown.enter.native.prevent="handleSearchBtnClick(form)"
     >
       <form-render
         :formData="value"
@@ -19,7 +18,7 @@
       <el-form-item class="apptemp-searchform__btns">
         <div>
           <el-button
-            @click="handleSearchBtnClick(form)"
+            @click="handleSearchBtnClick"
             class="search_btn"
             data-mark="筛选条件搜索按钮"
             type="primary"
@@ -110,7 +109,7 @@ export default {
 
     async handleSearchBtnClick() {
       if (this.extras.searchEvent) {
-        this.onBtnClick(this.extras.searchEvent, this.$refs.searchForm)
+        this.onBtnClick(this.extras.searchEvent, this.value)
       } else {
         console.log(this.id, '未定义查询事件')
       }

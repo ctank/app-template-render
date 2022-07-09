@@ -85,6 +85,9 @@ export default {
               case 'radio':
                 this.renderComponent = (await import(`./radio/index.vue`)).default
                 break
+              case 'select':
+                this.renderComponent = (await import(`./select/index.vue`)).default
+                break
             }
           },
           render({ component, componentMap, formData }) {
