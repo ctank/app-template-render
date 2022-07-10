@@ -15,7 +15,7 @@
 
 <script>
 import { h } from 'vue'
-import { getValueByPath, setValueByPath } from '../../utils/common'
+import { getValueByPath, setValueByPath, isValueEqual } from '../../utils/common'
 
 export default {
   name: 'FormRender',
@@ -85,6 +85,9 @@ export default {
               case 'radio':
                 this.renderComponent = (await import(`./radio/index.vue`)).default
                 break
+              case 'checkBox':
+                this.renderComponent = (await import(`./checkBox/index.vue`)).default
+                break
               case 'select':
                 this.renderComponent = (await import(`./select/index.vue`)).default
                 break
@@ -114,14 +117,14 @@ export default {
               const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
               switch (logic) {
                 case '0':
-                  if (targetValue !== value) {
+                  if (!isValueEqual(targetValue, value)) {
                     show = true
                   } else {
                     show = false
                   }
                   break
                 case '1':
-                  if (targetValue === value) {
+                  if (isValueEqual(targetValue, value)) {
                     show = true
                   } else {
                     show = false
