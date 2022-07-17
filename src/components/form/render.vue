@@ -85,6 +85,9 @@ export default {
               case 'textarea':
                 this.renderComponent = (await import(`./textarea/index.vue`)).default
                 break
+              case 'number':
+                this.renderComponent = (await import(`./number/index.vue`)).default
+                break
               case 'radio':
                 this.renderComponent = (await import(`./radio/index.vue`)).default
                 break
