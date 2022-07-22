@@ -267,3 +267,65 @@ export const validFloat = (value, decimal = '') => {
   }
   return true
 }
+
+/**
+ * 复制单行内容到粘贴板
+ * content : 需要复制的内容
+ * message : 复制完后的提示，不传则默认提示"复制成功"
+ */
+export const copyToClip = (contents, cb) => {
+  let value = ''
+  if (Array.isArray(contents)) {
+    for (var i = 0; i < contents.length; i++) {
+      value += contents[i] + '\n'
+    }
+  } else {
+    value = contents
+  }
+
+  // navigator clipboard 需要https等安全上下文
+  if (navigator.clipboard && window.isSecureContext) {
+    // navigator clipboard 向剪贴板写文本
+    navigator.clipboard.writeText(value).then(() => {
+      cb(true)
+    })
+  } else {
+    // // 创建text area
+    // let textArea = document.createElement('textarea')
+    // textArea.value = content
+    // // 使text area不在viewport，同时设置不可见
+    // textArea.style.position = 'absolute'
+    // textArea.style.opacity = '0'
+    // textArea.style.left = '-999999px'
+    // textArea.style.top = '-999999px'
+    // document.body.appendChild(textArea)
+    // textArea.focus()
+    // textArea.select()
+    // // 执行复制命令并移除文本框
+    // document.execCommand('copy')
+    // this.$message.success(`复制成功: ${this.content}`)
+    // textArea.remove()
+
+    const textarea = document.createElement('textarea')
+    textarea.value = value
+    document.body.appendChild(textarea)
+    textarea.select()
+    if (document.execCommand('copy')) {
+      document.execCommand('copy')
+    }
+    document.body.removeChild(textarea)
+    cb(true)
+  }
+
+  // var aux = document.createElement('input')
+  // aux.setAttribute('value', content)
+  // document.body.appendChild(aux)
+  // aux.select()
+  // document.execCommand('copy')
+  // document.body.removeChild(aux)
+  // if (message == null) {
+  //   alert('复制成功')
+  // } else {
+  //   alert(message)
+  // }
+}

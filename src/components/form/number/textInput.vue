@@ -1,23 +1,39 @@
 <template>
-  <div class="el-input-number el-input-amount">
-    <span role="button" class="el-input-number__decrease">
-      <el-icon><Minus /></el-icon>
-    </span>
-    <span role="button" class="el-input-number__increase">
-      <el-icon><Plus /></el-icon>
-    </span>
-    <el-input
-      v-model="inputValue"
-      class="input-with-select"
-      @focus="handleInputFocus"
-      @blur="handleInputBlur"
-      @input="handleValueInput"
-    />
+  <div class="el-input-amount">
+    <div class="el-input-number">
+      <span
+        role="button"
+        data-type="decrease"
+        class="el-input-number__decrease"
+        @mousedown="handleValueChange"
+      >
+        <el-icon><Minus /></el-icon>
+      </span>
+      <span
+        role="button"
+        data-type="increase"
+        class="el-input-number__increase"
+        @mousedown="handleValueChange"
+      >
+        <el-icon><Plus /></el-icon>
+      </span>
+      <el-input
+        v-model="inputValue"
+        class="input-with-select"
+        @focus="handleInputFocus"
+        @blur="handleInputBlur"
+        @input="handleValueInput"
+      />
+    </div>
+    <el-button class="el-input-amount__copy" @click="handleValueCopy(inputValue)">
+      <el-icon><CopyDocument /></el-icon>
+    </el-button>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import { copyToClip } from '../../../utils/common'
 
 const numbro = require('numbro')
 
@@ -90,7 +106,6 @@ export default defineComponent({
     },
     // 金额转中文大写
     formatText(value) {
-      debugger
       const valueByStr = value.toString()
       const tempArr = valueByStr.split('.')
       if (tempArr[0].length > 12) {
@@ -116,7 +131,7 @@ export default defineComponent({
           p = digit[num % 10] + unit[1][j] + p
           num = Math.floor(num / 10)
         }
-        text = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s
+        text = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + text
       }
       return text
         .replace(/(零.)*零圆/, '圆')
@@ -129,11 +144,75 @@ export default defineComponent({
     handleInputBlur() {
       this.isFocus = false
     },
+    handleValueChange(e) {
+      let interval = null
+      let isHandlerCalled = false
+
+      const handler = () => {
+        let currentElm = e.path.find((item) => item.dataset.type)
+        let val = this.modelValue
+        if (currentElm.dataset.type === 'decrease') {
+          val--
+          if (val < 0) {
+            val = 0
+          }
+        } else if (currentElm.dataset.type === 'increase') {
+          val++
+        }
+        this.handleValueInput(val)
+      }
+
+      const clear = () => {
+        clearInterval(interval)
+        interval = null
+
+        if (!isHandlerCalled) {
+          handler()
+        }
+        isHandlerCalled = false
+      }
+
+      if (e.button !== 0) {
+        return
+      }
+
+      document.addEventListener('mouseup', clear, { once: true })
+      clearInterval(interval)
+      interval = setInterval(() => {
+        isHandlerCalled = true
+        handler()
+      }, 100)
+    },
     handleValueInput(val) {
       this.$emit('update:modelValue', val)
+    },
+    handleValueCopy(val) {
+      copyToClip(val, (state) => {
+        if (state) {
+          const { $message } = this.__$app.config.globalProperties
+          if ($message) {
+            $message({
+              showClose: true,
+              message: '复制成功',
+              type: 'success'
+            })
+          } else {
+            alert('复制成功')
+          }
+        }
+      })
     }
   }
 })
 </script>
 
-<style></style>
+<style>
+.el-input-amount {
+  width: 100%;
+  display: flex;
+}
+.el-input-amount__copy {
+  vertical-align: bottom;
+  margin-left: 10px;
+}
+</style>

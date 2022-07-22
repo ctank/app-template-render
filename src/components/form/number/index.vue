@@ -13,7 +13,16 @@
       :precision="extras.precision"
       :step="extras.step"
     />
-    <text-input v-else v-model="value" :type="extras.validType" :showText="extras.showText" />
+    <text-input
+      v-else
+      v-model="value"
+      :type="extras.validType"
+      :min="extras.min || -Infinity"
+      :max="extras.max || Infinity"
+      :precision="extras.precision"
+      :step="extras.step"
+      :showText="extras.showText"
+    />
   </el-form-item>
 </template>
 
@@ -143,12 +152,16 @@ export default defineComponent({
     },
 
     setDefaultValue() {
-      if (this.extras.defaultValue && !this.value) {
-        this.$emit('change', this.extras.defaultValue, this.id)
+      if (!this.value) {
+        this.$emit('change', this.extras.defaultValue || 0, this.id)
       }
     }
   }
 })
 </script>
 
-<style></style>
+<style>
+.el-input-number {
+  flex: 1;
+}
+</style>
