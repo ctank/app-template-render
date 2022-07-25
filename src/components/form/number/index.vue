@@ -8,8 +8,8 @@
     <el-input-number
       v-if="isInputNumber"
       v-model="value"
-      :min="extras.min || -Infinity"
-      :max="extras.max || Infinity"
+      :min="extras.min || Number.NEGATIVE_INFINITY"
+      :max="extras.max || Number.POSITIVE_INFINITY"
       :precision="extras.precision"
       :step="extras.step"
     />
@@ -17,8 +17,8 @@
       v-else
       v-model="value"
       :type="extras.validType"
-      :min="extras.min || -Infinity"
-      :max="extras.max || Infinity"
+      :min="extras.min || Number.NEGATIVE_INFINITY"
+      :max="extras.max || Number.POSITIVE_INFINITY"
       :precision="extras.precision"
       :step="extras.step"
       :showText="extras.showText"

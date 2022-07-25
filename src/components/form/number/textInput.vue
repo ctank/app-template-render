@@ -1,39 +1,43 @@
 <template>
-  <div class="el-input-amount">
-    <div class="el-input-number">
-      <span
-        role="button"
-        data-type="decrease"
-        class="el-input-number__decrease"
-        @mousedown="handleValueChange"
-      >
-        <el-icon><Minus /></el-icon>
-      </span>
-      <span
-        role="button"
-        data-type="increase"
-        class="el-input-number__increase"
-        @mousedown="handleValueChange"
-      >
-        <el-icon><Plus /></el-icon>
-      </span>
-      <el-input
-        v-model="inputValue"
-        class="input-with-select"
-        @focus="handleInputFocus"
-        @blur="handleInputBlur"
-        @input="handleValueInput"
-      />
-    </div>
-    <el-button class="el-input-amount__copy" @click="handleValueCopy(inputValue)">
-      <el-icon><CopyDocument /></el-icon>
-    </el-button>
+  <div class="el-input-amount el-input-number">
+    <span
+      role="button"
+      data-type="decrease"
+      class="el-input-number__decrease"
+      :class="{ 'is-disabled': modelValue <= min }"
+      @mousedown="handleValueChange"
+    >
+      <el-icon><Minus /></el-icon>
+    </span>
+    <span
+      role="button"
+      data-type="increase"
+      class="el-input-number__increase"
+      :class="{ 'is-disabled': modelValue >= max }"
+      @mousedown="handleValueChange"
+    >
+      <el-icon><Plus /></el-icon>
+    </span>
+    <el-input
+      v-model="inputValue"
+      class="input-with-select"
+      @focus="handleInputFocus"
+      @blur="handleInputBlur"
+      @input="handleValueInput"
+      @keypress="validKeyCode"
+    >
+      <template #suffix>
+        <el-icon class="el-input-amount__copy" @click="handleValueCopy(inputValue)"
+          ><CopyDocument
+        /></el-icon>
+      </template>
+    </el-input>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import { copyToClip } from '../../../utils/common'
+import { copyToClip, isNull } from '../../../utils/common'
 
 const numbro = require('numbro')
 
@@ -120,6 +124,9 @@ export default defineComponent({
       ]
       let num = Math.abs(+value)
       let text = ''
+      if (isNaN(num)) {
+        return ''
+      }
       fraction.forEach((item, index) => {
         text += (digit[Math.floor(num * 10 * 10 ** index) % 10] + item).replace(/零./, '')
       })
@@ -137,6 +144,16 @@ export default defineComponent({
         .replace(/(零.)*零圆/, '圆')
         .replace(/(零.)+/g, '零')
         .replace(/^整$/, '零圆整')
+    },
+
+    validKeyCode(e) {
+      const key = String.fromCharCode(e.keyCode)
+      if (key === '.') {
+        if ((this.modelValue + '').indexOf('.') >= 0) {
+          return false
+        }
+      }
+      return /[\d.]/.test(key)
     },
     handleInputFocus() {
       this.isFocus = true
@@ -184,6 +201,29 @@ export default defineComponent({
       }, 100)
     },
     handleValueInput(val) {
+      // 判断小数位数
+      const decimalIndex = val.indexOf('.')
+      let decimalLength = 0
+      if (decimalIndex >= 0) {
+        decimalLength = val.substr(val.indexOf('.') + 1).length
+      }
+
+      if (!isNull(this.precision) && decimalLength > this.precision) {
+        val = numbro(val).format({ mantissa: this.precision })
+      }
+
+      if (this.max && Number(val) > this.max) {
+        // 判断最大值
+        val = this.max
+      } else if (this.min && Number(val) < this.min) {
+        // 判断最小值
+        val = this.min
+      }
+
+      if (decimalLength > 0 && Number(val) !== 0) {
+        val = Number(val)
+      }
+
       this.$emit('update:modelValue', val)
     },
     handleValueCopy(val) {
@@ -207,12 +247,7 @@ export default defineComponent({
 </script>
 
 <style>
-.el-input-amount {
-  width: 100%;
-  display: flex;
-}
-.el-input-amount__copy {
-  vertical-align: bottom;
-  margin-left: 10px;
+.el-input-amount .el-input-amount__copy {
+  cursor: pointer;
 }
 </style>
