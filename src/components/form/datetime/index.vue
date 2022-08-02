@@ -42,8 +42,8 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { getValueByPath, cloneDeep } from '../../../utils/common'
 import base from '../base.vue'
-import { cloneDeep } from '../../../utils/common'
 
 const dayjs = require('dayjs')
 
@@ -54,7 +54,10 @@ const getLimitDate = ({ type, value }, relateValue) => {
   if (type === 'fixed') {
     return dayjs(value)
   } else if (type === 'field') {
-    return dayjs(relateValue)
+    if (relateValue) {
+      return dayjs(relateValue)
+    }
+    return null
   } else {
     const date = dayjs()
     if (type === 'now') {
