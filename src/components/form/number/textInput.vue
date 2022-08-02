@@ -1,5 +1,5 @@
 <template>
-  <div class="el-input-amount el-input-number">
+  <div class="atr-number-amount el-input-number">
     <span
       role="button"
       data-type="decrease"
@@ -202,7 +202,7 @@ export default defineComponent({
     },
     handleValueInput(val) {
       // 判断小数位数
-      const decimalIndex = val.indexOf('.')
+      const decimalIndex = (val + '').indexOf('.')
       let decimalLength = 0
       if (decimalIndex >= 0) {
         decimalLength = val.substr(val.indexOf('.') + 1).length
@@ -222,6 +222,9 @@ export default defineComponent({
 
       if (decimalLength > 0 && Number(val) !== 0) {
         val = Number(val)
+        if (isNaN(val)) {
+          val = ''
+        }
       }
 
       this.$emit('update:modelValue', val)
@@ -247,7 +250,7 @@ export default defineComponent({
 </script>
 
 <style>
-.el-input-amount .el-input-amount__copy {
+.atr-number-amount .el-input-amount__copy {
   cursor: pointer;
 }
 </style>

@@ -118,18 +118,6 @@ export default defineComponent({
               trigger: 'blur'
             })
           }
-          // // 默认不能大于128
-          // // 【流程建模--- 武探星测试进销存相关应用”下面的【单文本流程】建立 一个新流程，查看【单行文本2】后面输入框的提示信息，是“请填写”，跟需求不符，需求是“请输入内容”，另外 ，当输入内容超长，超过输入框的长度时，后面的内容以...显示，跟需求不符】https://www.tapd.cn/49578510/bugtrace/bugs/view?bug_id=1149578510001023656
-          // this.rules.push({
-          //   validator: (rules, value, callback) => {
-          //     if (typeof value === 'string' && value.length && value.length > 128) {
-          //       callback(new Error(`${title}的长度不能大于128`))
-          //       return
-          //     }
-          //     callback()
-          //   },
-          //   trigger: 'change'
-          // })
         }
       }
     },

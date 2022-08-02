@@ -97,6 +97,9 @@ export default {
               case 'select':
                 this.renderComponent = (await import(`./select/index.vue`)).default
                 break
+              case 'datetime':
+                this.renderComponent = (await import(`./datetime/index.vue`)).default
+                break
             }
           },
           render({ component, componentMap, formData }) {
