@@ -8,7 +8,7 @@ import { getValueByPath } from '../../utils/common'
 export default {
   name: 'FormComponentBase',
   components: {},
-  inject: ['onChange', 'onGetValue'],
+  inject: ['onChange', 'onGetValue', 'onEvent'],
   props: {
     id: {
       type: String,

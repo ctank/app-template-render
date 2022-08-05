@@ -22,7 +22,8 @@ export default {
   provide() {
     return {
       onChange: this.handleValueChange,
-      onGetValue: this.handleValueGet
+      onGetValue: this.handleValueGet,
+      onEvent: this.handleEvent
     }
   },
   props: {
@@ -100,6 +101,9 @@ export default {
               case 'datetime':
                 this.renderComponent = (await import(`./datetime/index.vue`)).default
                 break
+              case 'imageUpload':
+                this.renderComponent = (await import(`./imageUpload/index.vue`)).default
+                break
             }
           },
           render({ component, componentMap, formData }) {
@@ -154,6 +158,9 @@ export default {
     },
     handleValueGet(val, id) {
       this.$emit('getValue', val, id)
+    },
+    handleEvent(event, data, cb) {
+      this.$emit(event, data, cb)
     }
   }
 }
