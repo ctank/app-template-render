@@ -1,6 +1,6 @@
 <template>
   <div class="component-render">
-    <template v-for="(item, index) in layouts" :key="`${item.id}-${index}`">
+    <template v-for="(item, index) in layouts">
       <form-component-render
         v-if="getComponentDisplay(componentMap[item.id])"
         :key="`${item.id}-${index}`"
@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import { h } from 'vue'
+import { h, defineComponent } from 'vue'
 import { getValueByPath, setValueByPath, isValueEqual } from '../../utils/common'
 
-export default {
+export default defineComponent({
   name: 'FormRender',
   provide() {
     return {
@@ -104,6 +104,9 @@ export default {
               case 'imageUpload':
                 this.renderComponent = (await import(`./imageUpload/index.vue`)).default
                 break
+              case 'fileUpload':
+                this.renderComponent = (await import(`./fileUpload/index.vue`)).default
+                break
             }
           },
           render({ component, componentMap, formData }) {
@@ -163,7 +166,7 @@ export default {
       this.$emit(event, data, cb)
     }
   }
-}
+})
 </script>
 
 <style></style>

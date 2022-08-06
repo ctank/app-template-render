@@ -5,6 +5,7 @@ import commonjsPlugin from '@rollup/plugin-commonjs'
 import servePlugin from 'rollup-plugin-serve'
 import livereloadPlugin from 'rollup-plugin-livereload'
 import postcssPlugin from 'rollup-plugin-postcss'
+import imagePlugin from '@rollup/plugin-image';
 import { terser } from 'rollup-plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import clear from 'rollup-plugin-clear'
@@ -31,8 +32,8 @@ export default (config = {}) => {
   let plugins = [
     resolvePlugin(),
     vuePlugin({
+      css: false,
       compileTemplate: true,
-
       style: {
         postcssPlugins: [autoprefixer()]
       },
@@ -44,12 +45,13 @@ export default (config = {}) => {
       // include: 'node_modules/**',
       ...commonjs
     }),
+    imagePlugin(),
     // ...
     clear({
       // required, point out which directories should be clear.
       targets: ['dist'],
       // optional, whether clear the directores when rollup recompile on --watch mode.
-      watch: true, // default: false
+      watch: true // default: false
     })
   ]
 
