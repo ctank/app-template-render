@@ -18,7 +18,7 @@ import icon_word from '../assets/images/icon_word.png'
 import icon_xmind from '../assets/images/icon_xmind.png'
 import icon_zip from '../assets/images/icon_zip.png'
 
-export const LAYOUT_TYPES = ['row', 'column']
+export const LAYOUT_TYPES = ['row', 'column', 'tabs', 'tabPanel']
 
 export const FILE_EXT_ICONS = {
   ai: icon_ai,

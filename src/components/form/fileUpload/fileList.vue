@@ -65,9 +65,7 @@ export default defineComponent({
     }
   },
   watch: {},
-  created() {
-    console.log(this.fileTypeIcons)
-  },
+  created() {},
   methods: {
     getFileTypeIconSrc(file) {
       let src = FILE_TYPE_ICONS.file

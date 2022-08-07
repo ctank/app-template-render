@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="10">
     <el-col v-for="(col, i) in children" :key="`col-${i}`" :span="24 / extras.size">
-      <component-render
+      <form-component-render
         v-for="(item, j) in col.children"
         :key="`col-item-${j}`"
         :formData="formData"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import base from '../base'
+import base from '../base.vue'
 
 export default {
   name: 'Row',

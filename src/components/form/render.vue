@@ -16,6 +16,7 @@
 <script>
 import { h, defineComponent } from 'vue'
 import { getValueByPath, setValueByPath, isValueEqual } from '../../utils/common'
+import { LAYOUT_TYPES } from '../../utils/constant'
 
 export default defineComponent({
   name: 'FormRender',
@@ -80,6 +81,9 @@ export default defineComponent({
           },
           async created() {
             switch (this.component.type) {
+              case 'row':
+                this.renderComponent = (await import(`./row/index.vue`)).default
+                break
               case 'textBox':
                 this.renderComponent = (await import(`./textBox/index.vue`)).default
                 break
@@ -124,34 +128,39 @@ export default defineComponent({
     },
     getComponentDisplay(item) {
       let show = true
-      if (item.extras.showConfig && item.extras.showConfig.length) {
-        show = false
-        for (let i = 0; i < item.extras.showConfig.length; i += 1) {
-          if (!show) {
-            for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
-              const { field, value, logic } = item.extras.showConfig[i][j]
-              const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
-              switch (logic) {
-                case '0':
-                  if (!isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-                case '1':
-                  if (isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
+      if (!LAYOUT_TYPES.includes(item.type)) {
+        if (item.extras.showConfig && item.extras.showConfig.length) {
+          show = false
+          for (let i = 0; i < item.extras.showConfig.length; i += 1) {
+            if (!show) {
+              for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
+                const { field, value, logic } = item.extras.showConfig[i][j]
+                const targetValue = getValueByPath(
+                  this.formData,
+                  this.componentMap[field].fieldPath
+                )
+                switch (logic) {
+                  case '0':
+                    if (!isValueEqual(targetValue, value)) {
+                      show = true
+                    } else {
+                      show = false
+                    }
+                    break
+                  case '1':
+                    if (isValueEqual(targetValue, value)) {
+                      show = true
+                    } else {
+                      show = false
+                    }
+                    break
+                }
               }
             }
           }
-        }
-        if (!show) {
-          setValueByPath(this.formData, item.fieldPath, '')
+          if (!show) {
+            setValueByPath(this.formData, item.fieldPath, '')
+          }
         }
       }
       return show
@@ -169,4 +178,8 @@ export default defineComponent({
 })
 </script>
 
-<style></style>
+<style>
+.component-render {
+  overflow: hidden;
+}
+</style>
