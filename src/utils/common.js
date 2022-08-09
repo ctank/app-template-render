@@ -59,7 +59,7 @@ export const getValueByPath = (data, path) => {
       }
     }
   }
-  return value
+  return value || ''
 }
 
 export const setValueByPath = (data, path, val) => {
@@ -85,6 +85,25 @@ export const setValueByPath = (data, path, val) => {
     }
   }
   return data
+}
+
+export const getComponentMap = (layouts, components) => {
+  const obj = {}
+  if (Array.isArray(components)) {
+    components.forEach((item) => {
+      if (!obj[item.id]) {
+        obj[item.id] = item
+      }
+    })
+  }
+  if (Array.isArray(layouts)) {
+    layouts.forEach((layout) => {
+      if (!obj[layout.id]) {
+        obj[layout.id] = layout
+      }
+    })
+  }
+  return obj
 }
 
 /**

@@ -1,6 +1,6 @@
 <template>
-  <div class="apptemp-listview">
-    <div class="apptemp-listview__action">
+  <div class="atp-listview">
+    <div class="atp-listview__action">
       <el-button
         v-for="btn in extras.operations"
         :key="btn.buttonEvent"
@@ -10,7 +10,7 @@
         {{ btn.buttonName }}
       </el-button>
     </div>
-    <div class="apptemp-listview__title" v-if="showTitle">{{ title }}</div>
+    <div class="atp-listview__title" v-if="showTitle">{{ title }}</div>
     <el-table
       :data="viewData[dataPath]"
       style="width: 100%"
@@ -32,12 +32,13 @@
         >
           <template #default="{ row, $index }"> {{ row[column.fieldPath] }} </template>
         </el-table-column>
-        <el-table-column v-else :key="`button-${index}`" :label="column.label">
+        <el-table-column v-else fixed="right" :key="`button-${index}`" :label="column.label">
           <template #default="{ row, $index }">
             <el-button
               v-for="btn in column.actionConfig"
               :key="btn.buttonEvent"
               :type="btn.buttonType"
+              link
               @click="handleColBtnClick(btn.buttonEvent, row)"
             >
               {{ btn.buttonName }}
@@ -49,6 +50,7 @@
     <el-pagination
       small
       background
+      class="atp-listview__pagination"
       :page-sizes="extras.pageSize"
       layout="sizes, prev, pager, next"
       :total="2"
@@ -108,4 +110,11 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.atp-listview {
+  .atp-listview__pagination {
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+}
+</style>

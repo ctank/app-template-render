@@ -1,5 +1,5 @@
 <template>
-  <div class="component-render">
+  <div class="search-component-render">
     <template v-for="(item, index) in layouts">
       <search-component-render
         v-if="getComponentDisplay(componentMap[item.id])"
@@ -15,7 +15,8 @@
 
 <script>
 import { h } from 'vue'
-import { getValueByPath, setValueByPath } from '../../../utils/common'
+import { getValueByPath, setValueByPath, getComponentMap } from '../../../utils/common'
+import { LAYOUT_TYPES } from '../../../utils/constant'
 
 export default {
   name: 'SearchFormRender',
@@ -32,10 +33,10 @@ export default {
         return []
       }
     },
-    componentMap: {
-      type: Object,
+    components: {
+      type: Array,
       default() {
-        return {}
+        return []
       }
     },
     formData: {
@@ -43,6 +44,11 @@ export default {
       default() {
         return null
       }
+    }
+  },
+  computed: {
+    componentMap() {
+      return getComponentMap(this.layouts, this.components)
     }
   },
   created() {
@@ -79,15 +85,38 @@ export default {
           },
           async created() {
             switch (this.component.type) {
+              case 'row':
+                this.renderComponent = (await import(`../../form/row/index.vue`)).default
+                break
               case 'textBox':
-                this.renderComponent = (
-                  await import('../../form/textBox/index.vue')
-                ).default
+                this.renderComponent = (await import(`../../form/textBox/index.vue`)).default
+                break
+              case 'textarea':
+                this.renderComponent = (await import(`../../form/textarea/index.vue`)).default
+                break
+              case 'number':
+                this.renderComponent = (await import(`../../form/number/index.vue`)).default
                 break
               case 'radio':
-                this.renderComponent = (
-                  await import('../../form/radio/index.vue')
-                ).default
+                this.renderComponent = (await import(`../../form/radio/index.vue`)).default
+                break
+              case 'checkBox':
+                this.renderComponent = (await import(`../../form/checkBox/index.vue`)).default
+                break
+              case 'select':
+                this.renderComponent = (await import(`../../form/select/index.vue`)).default
+                break
+              case 'cascader':
+                this.renderComponent = (await import(`../../form/cascader/index.vue`)).default
+                break
+              case 'datetime':
+                this.renderComponent = (await import(`../../form/datetime/index.vue`)).default
+                break
+              case 'imageUpload':
+                this.renderComponent = (await import(`../../form/imageUpload/index.vue`)).default
+                break
+              case 'fileUpload':
+                this.renderComponent = (await import(`../../form/fileUpload/index.vue`)).default
                 break
             }
           },
@@ -106,34 +135,39 @@ export default {
     },
     getComponentDisplay(item) {
       let show = true
-      if (item.extras.showConfig && item.extras.showConfig.length) {
-        show = false
-        for (let i = 0; i < item.extras.showConfig.length; i += 1) {
-          if (!show) {
-            for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
-              const { field, value, logic } = item.extras.showConfig[i][j]
-              const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
-              switch (logic) {
-                case '0':
-                  if (targetValue !== value) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-                case '1':
-                  if (targetValue === value) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
+      if (item && !LAYOUT_TYPES.includes(item.type)) {
+        if (item.extras.showConfig && item.extras.showConfig.length) {
+          show = false
+          for (let i = 0; i < item.extras.showConfig.length; i += 1) {
+            if (!show) {
+              for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
+                const { field, value, logic } = item.extras.showConfig[i][j]
+                const targetValue = getValueByPath(
+                  this.formData,
+                  this.componentMap[field].fieldPath
+                )
+                switch (logic) {
+                  case '0':
+                    if (targetValue !== value) {
+                      show = true
+                    } else {
+                      show = false
+                    }
+                    break
+                  case '1':
+                    if (targetValue === value) {
+                      show = true
+                    } else {
+                      show = false
+                    }
+                    break
+                }
               }
             }
           }
-        }
-        if (!show) {
-          setValueByPath(this.formData, item.fieldPath, '')
+          if (!show) {
+            setValueByPath(this.formData, item.fieldPath, '')
+          }
         }
       }
 

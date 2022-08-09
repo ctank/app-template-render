@@ -1,34 +1,31 @@
 <template>
-  <div class="apptemp-searchform">
-    <el-form
-      ref="searchForm"
-      label-position="left"
-      label-width="100px"
-      :model="value"
-      inline
-    >
-      <form-render
-        :formData="value"
-        :layouts="extras.layouts"
-        :componentMap="extras.componentMap"
-        @change="handleValueChange"
-        @getValue="handleValueGet"
-      />
+  <el-form
+    class="atp-search-form"
+    ref="searchForm"
+    label-position="left"
+    label-width="100px"
+    :model="value"
+    inline
+  >
+    <form-render
+      :formData="value"
+      :layouts="extras.layouts"
+      :components="extras.components"
+      @change="handleValueChange"
+      @getValue="handleValueGet"
+    />
 
-      <el-form-item class="apptemp-searchform__btns">
-        <div>
-          <el-button
-            @click="handleSearchBtnClick"
-            class="search_btn"
-            data-mark="筛选条件搜索按钮"
-            type="primary"
-            >搜索</el-button
-          >
-          <el-button @click="handleFormReset">重置</el-button>
-        </div>
-      </el-form-item>
-    </el-form>
-  </div>
+    <div class="atp-search-form__action">
+      <el-button
+        @click="handleSearchBtnClick"
+        class="search_btn"
+        data-mark="筛选条件搜索按钮"
+        type="primary"
+        >搜索</el-button
+      >
+      <el-button @click="handleFormReset">重置</el-button>
+    </div>
+  </el-form>
 </template>
 
 <script>
@@ -128,8 +125,48 @@ export default {
 }
 </script>
 
-<style>
-.apptemp-searchform .el-form-item__content {
-  min-width: 200px;
+<style lang="scss">
+.atp-search-form {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 -8px;
+  .search-component-render {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: auto;
+    .el-form-item {
+      width: 30%;
+      min-width: 200px;
+      margin: 0 8px 20px;
+    }
+  }
+  .atp-search-form__action {
+    padding-left: 12px;
+    margin-left: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    position: relative;
+    &:before {
+      content: '';
+      display: block;
+      border-left: 1px solid #e5e6eb;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 20px;
+    }
+    .el-button {
+      margin: 0 8px 20px;
+      + .el-button {
+        margin-left: 8px;
+      }
+    }
+  }
+  + .atp-listview {
+    border-top: 1px solid #e5e6eb;
+    padding-top: 20px;
+  }
 }
 </style>

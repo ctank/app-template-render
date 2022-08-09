@@ -2,7 +2,7 @@
   <div class="component-render">
     <template v-for="(item, index) in layouts">
       <view-component-render
-        v-if="getComponentDisplay(componentMap[item.id])"
+        v-if="componentMap[item.id]"
         :key="`${item.id}-${index}`"
         :viewData="viewData"
         :component="componentMap[item.id]"
@@ -15,7 +15,7 @@
 
 <script>
 import { h } from 'vue'
-import { getValueByPath, setValueByPath } from '../../utils/common'
+import { getComponentMap } from '../../utils/common'
 
 export default {
   name: 'ViewRender',
@@ -31,10 +31,10 @@ export default {
         return []
       }
     },
-    componentMap: {
-      type: Object,
+    components: {
+      type: Array,
       default() {
-        return {}
+        return []
       }
     },
     viewData: {
@@ -42,6 +42,11 @@ export default {
       default() {
         return null
       }
+    }
+  },
+  computed: {
+    componentMap() {
+      return getComponentMap(this.layouts, this.components)
     }
   },
   created() {
@@ -77,13 +82,17 @@ export default {
             }
           },
           async created() {
-            switch (this.component.type) {
-              case 'listView':
-                this.renderComponent = (await import(`./listView/index.vue`)).default
-                break
-              case 'searchForm':
-                this.renderComponent = (await import(`./searchForm/index.vue`)).default
-                break
+            if (this.component) {
+              switch (this.component.type) {
+                case 'listView':
+                  this.renderComponent = (await import(`./listView/index.vue`)).default
+                  break
+                case 'searchForm':
+                  this.renderComponent = (await import(`./searchForm/index.vue`)).default
+                  break
+              }
+            } else {
+              console.log('component error')
             }
           },
           render({ component, componentMap, viewData }) {
@@ -100,42 +109,6 @@ export default {
           }
         })
       }
-    },
-    getComponentDisplay(item) {
-      let show = true
-
-      if (item.extras.usageCondition && item.extras.usageCondition.length) {
-        show = false
-        for (let i = 0; i < item.extras.usageCondition.length; i += 1) {
-          if (!show) {
-            for (let j = 0; j < item.extras.usageCondition[i].length; j += 1) {
-              const { field, value, logic } = item.extras.usageCondition[i][j]
-              const targetValue = getValueByPath(this.formData, this.componentMap[field].fieldPath)
-              switch (logic) {
-                case '0':
-                  if (targetValue !== value) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-                case '1':
-                  if (targetValue === value) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-              }
-            }
-          }
-        }
-        if (!show) {
-          setValueByPath(this.formData, item.fieldPath, '')
-        }
-      }
-
-      return show
     },
     handleBtnClick(event, data) {
       this.$emit(event, data)

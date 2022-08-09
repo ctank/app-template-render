@@ -15,7 +15,7 @@
 
 <script>
 import { h, defineComponent } from 'vue'
-import { getValueByPath, setValueByPath, isValueEqual } from '../../utils/common'
+import { getValueByPath, setValueByPath, getComponentMap, isValueEqual } from '../../utils/common'
 import { LAYOUT_TYPES } from '../../utils/constant'
 
 export default defineComponent({
@@ -34,10 +34,10 @@ export default defineComponent({
         return []
       }
     },
-    componentMap: {
-      type: Object,
+    components: {
+      type: Array,
       default() {
-        return {}
+        return []
       }
     },
     formData: {
@@ -45,6 +45,11 @@ export default defineComponent({
       default() {
         return null
       }
+    }
+  },
+  computed: {
+    componentMap() {
+      return getComponentMap(this.layouts, this.components)
     }
   },
   created() {
@@ -102,6 +107,9 @@ export default defineComponent({
               case 'select':
                 this.renderComponent = (await import(`./select/index.vue`)).default
                 break
+              case 'cascader':
+                this.renderComponent = (await import(`./cascader/index.vue`)).default
+                break
               case 'datetime':
                 this.renderComponent = (await import(`./datetime/index.vue`)).default
                 break
@@ -128,7 +136,7 @@ export default defineComponent({
     },
     getComponentDisplay(item) {
       let show = true
-      if (!LAYOUT_TYPES.includes(item.type)) {
+      if (item && !LAYOUT_TYPES.includes(item.type)) {
         if (item.extras.showConfig && item.extras.showConfig.length) {
           show = false
           for (let i = 0; i < item.extras.showConfig.length; i += 1) {
