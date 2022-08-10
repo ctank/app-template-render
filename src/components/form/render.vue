@@ -176,8 +176,8 @@ export default defineComponent({
     handleValueChange(val, id) {
       this.$emit('change', val, id)
     },
-    handleValueGet(val, id) {
-      this.$emit('getValue', val, id)
+    handleValueGet(data, cb) {
+      this.$emit('getValue', data, cb)
     },
     handleEvent(event, data, cb) {
       this.$emit(event, data, cb)

@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     handleValueChange(val, id) {
-      const component = this.extras.componentMap[id]
+      const component = this.extras.components.find((item) => item.id === id)
       if (component) {
         const paths = component.fieldPath.split('/')
         if (paths.length === 1) {

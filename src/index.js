@@ -1,5 +1,6 @@
 import FormRender from './components/form/index.js'
 import ViewRender from './components/view/index.js'
+import Utils from './utils/utils.js'
 
 const components = [FormRender, ViewRender]
 
@@ -12,7 +13,7 @@ const install = function (Vue) {
 }
 
 // To allow use as module (npm/webpack/etc.) export component
-export default { install, FormRender, ViewRender }
+export default { install, FormRender, ViewRender, Utils }
 
 // /***
 // 在es模块中， 能被按需引入的变量需要用这些方式导出：

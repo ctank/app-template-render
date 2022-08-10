@@ -163,7 +163,7 @@ export default defineComponent({
             value.push(this.extras.options[i].value)
           }
         }
-      }else{
+      } else {
         for (let i = 0; i < this.extras.options.length; i++) {
           if (this.extras.options[i].isDefault) {
             value = this.extras.options[i].value
@@ -181,8 +181,20 @@ export default defineComponent({
       if (this.extras.dataSource === 'api') {
         if (this.relateOptionFieldValue !== this.relateValue) {
           this.relateOptionFieldValue = this.relateValue
-          this.$emit('getValue', this.id, this.relateValue)
         }
+        const paths = this.fieldPath.split('/')
+        this.onGetValue(
+          {
+            id: this.id,
+            field: paths[paths.length - 1] || '',
+            relateValue: this.relateOptionFieldValue,
+          },
+          (options) => {
+            if (Array.isArray(options)) {
+              this.filterOptions = options
+            }
+          }
+        )
       } else {
         if (this.extras.relateOptionField) {
           const filterOptions = this.extras.relateAvailableOptions[this.relateValue]
@@ -196,7 +208,7 @@ export default defineComponent({
         }
       }
       this.filterOptions = options
-    },
+    }
 
     // onChange(val) {
     //   if (val !== this.value) {
