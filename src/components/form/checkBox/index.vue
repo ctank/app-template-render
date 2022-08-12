@@ -157,17 +157,52 @@ export default defineComponent({
             value.push(this.extras.options[i].value)
           }
         }
-        this.onChange(value, this.id)
+        if (value && value.length) {
+          this.onChange(value, this.id)
+        }
+      } else {
+        this.setCheckAll()
       }
     },
 
+    setCheckAll() {
+      let isCheckAll = true
+      if (this.filterOptions.length) {
+        for (let i = 0; i < this.filterOptions.length; i++) {
+          isCheckAll = this.value.includes(this.filterOptions[i].value)
+          if (!isCheckAll) {
+            break
+          }
+        }
+      } else {
+        isCheckAll = false
+      }
+      this.checkAll = isCheckAll
+    },
+
     setFilterOptions() {
+      const self = this
       let options = []
       if (this.extras.dataSource === 'api') {
         if (this.relateOptionFieldValue !== this.relateValue) {
           this.relateOptionFieldValue = this.relateValue
-          this.$emit('getValue', this.id, this.relateValue)
         }
+        const paths = this.fieldPath.split('/')
+        this.onGetValue(
+          {
+            id: this.id,
+            field: paths[paths.length - 1] || '',
+            relateValue: this.relateOptionFieldValue
+          },
+          (options) => {
+            if (Array.isArray(options)) {
+              setTimeout(() => {
+                self.filterOptions = options
+                self.setCheckAll()
+              }, 0)
+            }
+          }
+        )
       } else {
         if (this.extras.relateOptionField) {
           const filterOptions = this.extras.relateAvailableOptions[this.relateValue]

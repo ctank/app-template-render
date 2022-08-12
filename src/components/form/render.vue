@@ -7,7 +7,6 @@
         :formData="formData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
-        @change="handleValueChange"
       />
     </template>
   </div>
@@ -142,11 +141,16 @@ export default defineComponent({
           for (let i = 0; i < item.extras.showConfig.length; i += 1) {
             if (!show) {
               for (let j = 0; j < item.extras.showConfig[i].length; j += 1) {
-                const { field, value, logic } = item.extras.showConfig[i][j]
-                const targetValue = getValueByPath(
-                  this.formData,
-                  this.componentMap[field].fieldPath
-                )
+                const { field, value, logic, type } = item.extras.showConfig[i][j]
+                let fieldPath = ''
+                if (type === 'custom') {
+                  fieldPath = field
+                } else {
+                  if (this.componentMap[field]) {
+                    fieldPath = this.componentMap[field].fieldPath
+                  }
+                }
+                const targetValue = getValueByPath(this.formData, fieldPath)
                 switch (logic) {
                   case '0':
                     if (!isValueEqual(targetValue, value)) {
@@ -167,7 +171,11 @@ export default defineComponent({
             }
           }
           if (!show) {
-            setValueByPath(this.formData, item.fieldPath, '')
+            if (!this.components.some((component) => component.fieldPath === item.fieldPath)) {
+              setValueByPath(this.formData, item.fieldPath, '')
+            } else {
+              console.log('存在相同字段控件', item.id)
+            }
           }
         }
       }

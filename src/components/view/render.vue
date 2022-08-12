@@ -7,7 +7,6 @@
         :viewData="viewData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
-        @change="handleValueChange"
       />
     </template>
   </div>
@@ -21,7 +20,9 @@ export default {
   name: 'ViewRender',
   provide() {
     return {
-      onBtnClick: this.handleBtnClick
+      onChange: this.handleValueChange,
+      onGetValue: this.handleValueGet,
+      onEvent: this.handleEvent
     }
   },
   props: {
@@ -42,6 +43,12 @@ export default {
       default() {
         return null
       }
+    },
+    searchForm: {
+      type: Object,
+      default() {
+        return null
+      }
     }
   },
   computed: {
@@ -51,8 +58,27 @@ export default {
   },
   created() {
     this.registerRenderFun()
+    this.init()
   },
   methods: {
+    init() {
+      const searchFormComponent = this.components.find((item) => item.type === 'searchForm')
+      if (searchFormComponent && this.searchForm) {
+        const { components, layouts } = this.searchForm
+        const filterLayout = (res, layouts) => {
+          res.forEach((layout) => {
+            if (['row', 'column', 'tabs', 'tabPanel'].includes(layout.type) && layout.children) {
+              layouts = filterLayout(layout.children, layouts)
+            } else {
+              layouts.push(layout)
+            }
+          })
+          return layouts
+        }
+        searchFormComponent.extras.layouts = filterLayout(layouts, [])
+        searchFormComponent.extras.components = components
+      }
+    },
     registerRenderFun() {
       if (typeof this.__$app.component('view-component-render') === 'undefined') {
         this.__$app.component('view-component-render', {
@@ -100,9 +126,7 @@ export default {
               return h(this.renderComponent, {
                 componentMap,
                 viewData,
-                ...component,
-                onChange: self.handleValueChange,
-                onGetValue: self.handleValueGet
+                ...component
               })
             }
             return h('div')
@@ -110,8 +134,14 @@ export default {
         })
       }
     },
-    handleBtnClick(event, data) {
-      this.$emit(event, data)
+    handleValueChange(val, id) {
+      this.$emit('change', val, id)
+    },
+    handleValueGet(data, cb) {
+      this.$emit('getValue', data, cb)
+    },
+    handleEvent(event, data, cb) {
+      this.$emit(event, data, cb)
     }
   }
 }

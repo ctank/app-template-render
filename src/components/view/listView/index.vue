@@ -72,7 +72,11 @@
       class="atp-listview__pagination"
       :page-sizes="extras.pageSize"
       layout="sizes, prev, pager, next"
-      :total="2"
+      :total="pagination.total"
+      v-model:currentPage="pagination.currentPage"
+      v-model:pageSize="pagination.pageSize"
+      @size-change="handlePaginationSizeChange"
+      @current-change="handlePaginationCurrentChange"
     />
   </div>
 </template>
@@ -85,7 +89,7 @@ import ColumnContent from './columnContent.vue'
 export default {
   name: 'ListView',
   extends: base,
-  components:{ColumnContent},
+  components: { ColumnContent },
   data() {
     return {}
   },
@@ -114,6 +118,16 @@ export default {
           break
       }
       return style
+    },
+    pagination() {
+      if (this.viewData.pagination) {
+        return this.viewData.pagination
+      }
+      return {
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      }
     }
   },
   methods: {
@@ -154,10 +168,16 @@ export default {
         const table = this.$refs.listViewTable
         data.selections = table.getSelectionRows() || []
       }
-      this.onBtnClick(event, data)
+      this.onEvent(event, data)
     },
     handleColBtnClick(event, row) {
-      this.onBtnClick(event, row)
+      this.onEvent(event, row)
+    },
+    handlePaginationCurrentChange(val) {
+      this.onEvent('currentChange', val)
+    },
+    handlePaginationSizeChange(val) {
+      this.onEvent('sizeChange', val)
     }
   }
 }

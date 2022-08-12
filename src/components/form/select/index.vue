@@ -68,7 +68,7 @@ export default defineComponent({
       }
       if (this.extras.minLimit || this.extras.maxLimit) {
         config.multiple = true
-        config.limit = this.extras.maxLimit || this.extras.minLimit
+        config.limit = this.extras.maxLimit || 0
       }
       return config
     }
@@ -155,28 +155,31 @@ export default defineComponent({
     },
 
     setDefaultValue() {
-      let value = ''
-      if (this.extras.minLimit || this.extras.maxLimit) {
-        value = []
-        for (let i = 0; i < this.extras.options.length; i++) {
-          if (this.extras.options[i].isDefault) {
-            value.push(this.extras.options[i].value)
+      if (!this.value || !this.value.length) {
+        let value = ''
+        if (this.extras.minLimit || this.extras.maxLimit) {
+          value = []
+          for (let i = 0; i < this.extras.options.length; i++) {
+            if (this.extras.options[i].isDefault) {
+              value.push(this.extras.options[i].value)
+            }
+          }
+        } else {
+          for (let i = 0; i < this.extras.options.length; i++) {
+            if (this.extras.options[i].isDefault) {
+              value = this.extras.options[i].value
+              break
+            }
           }
         }
-      } else {
-        for (let i = 0; i < this.extras.options.length; i++) {
-          if (this.extras.options[i].isDefault) {
-            value = this.extras.options[i].value
-            break
-          }
+        if (value && value.length) {
+          this.onChange(value, this.id)
         }
-      }
-      if (value || value.length) {
-        this.onChange(value, this.id)
       }
     },
 
     setFilterOptions() {
+      const self = this
       let options = []
       if (this.extras.dataSource === 'api') {
         if (this.relateOptionFieldValue !== this.relateValue) {
@@ -187,11 +190,13 @@ export default defineComponent({
           {
             id: this.id,
             field: paths[paths.length - 1] || '',
-            relateValue: this.relateOptionFieldValue,
+            relateValue: this.relateOptionFieldValue
           },
           (options) => {
             if (Array.isArray(options)) {
-              this.filterOptions = options
+              setTimeout(() => {
+                self.filterOptions = options
+              }, 0)
             }
           }
         )

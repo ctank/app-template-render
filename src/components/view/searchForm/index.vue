@@ -11,7 +11,6 @@
       :formData="value"
       :layouts="extras.layouts"
       :components="extras.components"
-      @change="handleValueChange"
       @getValue="handleValueGet"
     />
 
@@ -37,12 +36,6 @@ export default {
   name: 'SearchForm',
   components: { FormRender },
   extends: base,
-  provide() {
-    return {
-      onChange: this.handleValueChange,
-      onGetValue: this.handleValueGet
-    }
-  },
   data() {
     return {
       dataCache: {}
@@ -52,61 +45,16 @@ export default {
     this.dataCache = cloneDeep(this.value)
   },
   methods: {
-    handleValueChange(val, id) {
-      const component = this.extras.components.find((item) => item.id === id)
-      if (component) {
-        const paths = component.fieldPath.split('/')
-        if (paths.length === 1) {
-          this.value[paths[0]] = val
-        } else {
-          let valueObj = null
-          for (let i = 0; i < paths.length; i++) {
-            if (i === paths.length - 1) {
-              if (valueObj) {
-                valueObj[paths[i]] = val
-              }
-              break
-            }
-            if (valueObj && valueObj[paths[i]]) {
-              valueObj = valueObj[paths[i]]
-            } else {
-              valueObj = this.value[paths[i]]
-            }
-          }
-        }
-      }
+    handleValueGet(data, cb) {
+      this.$emit('getValue', data, cb)
     },
-
-    handleValueGet(id, val) {
-      const component = this.componentMap[id]
-      if (val) {
-        component.extras.options = [
-          {
-            value: '3',
-            label: '接口三'
-          }
-        ]
-      } else {
-        component.extras.options = [
-          {
-            value: '1',
-            label: '接口一'
-          },
-          {
-            value: '2',
-            label: '接口二'
-          },
-          {
-            value: '3',
-            label: '接口三'
-          }
-        ]
-      }
+    handleEvent(event, data, cb) {
+      this.$emit(event, data, cb)
     },
 
     async handleSearchBtnClick() {
       if (this.extras.searchEvent) {
-        this.onBtnClick(this.extras.searchEvent, this.value)
+        this.onEvent(this.extras.searchEvent, this.value)
       } else {
         console.log(this.id, '未定义查询事件')
       }

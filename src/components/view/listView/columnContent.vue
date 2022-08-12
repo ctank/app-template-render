@@ -37,10 +37,12 @@ export default {
         c.content = value
       } else if (this.column.fieldType === 'option') {
         const item = (this.column.options || []).find((option) => option.value === value)
-        c.content = item.label
-        if (item.color) {
-          c.isTag = true
-          c.color = item.color
+        if (item) {
+          c.content = item.label
+          if (item.color) {
+            c.isTag = true
+            c.color = item.color
+          }
         }
       }
       return c
@@ -49,5 +51,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

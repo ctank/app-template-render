@@ -8,7 +8,7 @@ import { getValueByPath } from '../../utils/common'
 export default {
   name: 'ViewComponentBase',
   components: {},
-  inject: ['onBtnClick'],
+  inject: ['onChange', 'onGetValue', 'onEvent'],
   props: {
     id: {
       type: String,
