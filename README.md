@@ -151,7 +151,7 @@ export default {
 
 ## 配置渲染模板
 
-https://www.c-tank.cn/atp
+https://ctank.github.io/app-template-render/play
 
 数据保存在`localStorage`中
 
