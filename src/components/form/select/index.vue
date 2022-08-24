@@ -9,8 +9,8 @@
       v-model="value"
       :placeholder="placeholder"
       clearable
-      :multiple="multipleConfig.multiple"
-      :multiple-limit="multipleConfig.limit"
+      :multiple="extras.multiple"
+      :multiple-limit="multipleLimit"
     >
       <el-option
         v-for="(option, index) in filterOptions"
@@ -61,16 +61,14 @@ export default defineComponent({
       }
       return relateValue
     },
-    multipleConfig() {
-      const config = {
-        multiple: false,
-        limit: 0
+    multipleLimit() {
+      let limit = 0
+      if (this.extras.multiple) {
+        if (this.extras.minLimit || this.extras.maxLimit) {
+          limit = this.extras.maxLimit || 0
+        }
       }
-      if (this.extras.minLimit || this.extras.maxLimit) {
-        config.multiple = true
-        config.limit = this.extras.maxLimit || 0
-      }
-      return config
+      return limit
     }
   },
   watch: {

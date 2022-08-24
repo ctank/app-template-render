@@ -8,6 +8,8 @@
 <script>
 import Tag from './tag.vue'
 
+const dayjs = require('dayjs')
+
 export default {
   name: 'ColumnContent',
   components: { Tag },
@@ -35,6 +37,8 @@ export default {
       }
       if (this.column.fieldType === 'text') {
         c.content = value
+      } else if (this.column.fieldType === 'datetime') {
+        c.content = dayjs(value).format(this.column.format || 'YYYY-MM-DD HH:mm:ss')
       } else if (this.column.fieldType === 'option') {
         const item = (this.column.options || []).find((option) => option.value === value)
         if (item) {

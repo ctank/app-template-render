@@ -67,6 +67,7 @@
       </template>
     </el-table>
     <el-pagination
+      v-if="extras.showPagination"
       small
       background
       class="atp-listview__pagination"
