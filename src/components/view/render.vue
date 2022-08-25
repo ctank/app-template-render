@@ -113,6 +113,9 @@ export default {
                 case 'listView':
                   this.renderComponent = (await import(`./listView/index.vue`)).default
                   break
+                case 'treeView':
+                  this.renderComponent = (await import(`./treeView/index.vue`)).default
+                  break
                 case 'searchForm':
                   this.renderComponent = (await import(`./searchForm/index.vue`)).default
                   break
