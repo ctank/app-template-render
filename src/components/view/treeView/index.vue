@@ -7,6 +7,7 @@
       :data="value"
       :props="defaultProps"
       :draggable="extras.draggable || false"
+      :default-expand-all="extras.expandAll || false"
       :filter-node-method="filterNode"
       @node-drag-start="
         (draggingNode, event) => {
@@ -77,7 +78,13 @@ export default {
     defaultProps() {
       return {
         children: this.extras.childrenField || 'children',
-        label: this.extras.titleField || 'label'
+        label: this.extras.titleField || 'label',
+        disabled: this.extras.disabledField || 'disabled',
+        class: (data, node) => {
+          if (data[this.extras.disabledField || 'disabled']) {
+            return 'atp-treeview__node--disabled'
+          }
+        }
       }
     }
   },
@@ -148,6 +155,9 @@ export default {
     justify-content: space-between;
     width: 100%;
     padding-right: 10px;
+  }
+  .atp-treeview__node--disabled {
+    color: #ccc;
   }
   .el-tree-node__content {
     height: 36px;
