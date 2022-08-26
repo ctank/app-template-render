@@ -49,7 +49,7 @@
                 v-if="getComponentDisplay(data, btn)"
                 :key="btn.buttonEvent"
                 :type="btn.buttonType"
-                @click.stop="handleBtnClick(btn.buttonEvent, row)"
+                @click.stop="handleBtnClick(btn.buttonEvent, data)"
                 size="small"
               >
                 {{ btn.buttonName }}
