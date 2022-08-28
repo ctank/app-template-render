@@ -1,14 +1,16 @@
 <template>
   <div class="atp-listview">
     <div class="atp-listview__action">
-      <el-button
-        v-for="btn in extras.operations"
-        :key="btn.buttonEvent"
-        :type="btn.buttonType"
-        @click="handleBtnClick(btn.buttonEvent)"
-      >
-        {{ btn.buttonName }}
-      </el-button>
+      <template v-for="btn in extras.operations">
+        <el-button
+          v-if="isAdmin || checkPermission(btn.permission)"
+          :key="btn.buttonEvent"
+          :type="btn.buttonType"
+          @click="handleBtnClick(btn.buttonEvent)"
+        >
+          {{ btn.buttonName }}
+        </el-button>
+      </template>
     </div>
     <div class="atp-listview__title" v-if="showTitle">{{ title }}</div>
     <el-table
@@ -53,7 +55,7 @@
           <template #default="{ row, $index }">
             <template v-for="btn in column.actionConfig">
               <el-button
-                v-if="getComponentDisplay(row, btn)"
+                v-if="getComponentDisplay(row, btn) && (isAdmin || checkPermission(btn.permission))"
                 :key="btn.buttonEvent"
                 :type="btn.buttonType"
                 link
@@ -83,11 +85,12 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import base from '../base.vue'
-import { isValueEqual } from '../../../utils/common'
+import { isValueEqual, getComponentStatus } from '../../../utils/common'
 import ColumnContent from './columnContent.vue'
 
-export default {
+export default defineComponent({
   name: 'ListView',
   extends: base,
   components: { ColumnContent },
@@ -133,35 +136,7 @@ export default {
   },
   methods: {
     getComponentDisplay(row, item) {
-      let show = true
-      if (item && Array.isArray(item.showConfig) && item.showConfig.length) {
-        show = false
-        for (let i = 0; i < item.showConfig.length; i += 1) {
-          if (!show) {
-            for (let j = 0; j < item.showConfig[i].length; j += 1) {
-              const { field, value, logic } = item.showConfig[i][j]
-              const targetValue = row[field] || ''
-              switch (logic) {
-                case '0':
-                  if (!isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-                case '1':
-                  if (isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-              }
-            }
-          }
-        }
-      }
-      return show
+      return getComponentStatus(item.showConfig, row)
     },
     handleBtnClick(event) {
       const data = {}
@@ -181,7 +156,7 @@ export default {
       this.onEvent('sizeChange', val)
     }
   }
-}
+})
 </script>
 
 <style lang="scss">

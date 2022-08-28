@@ -28,11 +28,12 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import FormRender from './render.vue'
 import base from '../base.vue'
 import { cloneDeep } from '../../../utils/common'
 
-export default {
+export default defineComponent({
   name: 'SearchForm',
   components: { FormRender },
   extends: base,
@@ -70,7 +71,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style lang="scss">

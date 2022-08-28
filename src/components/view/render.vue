@@ -7,16 +7,17 @@
         :viewData="viewData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
+        :permissions="permissions"
       />
     </template>
   </div>
 </template>
 
 <script>
-import { h } from 'vue'
+import { h, defineComponent, markRaw } from 'vue'
 import { getComponentMap } from '../../utils/common'
 
-export default {
+export default defineComponent({
   name: 'ViewRender',
   provide() {
     return {
@@ -48,6 +49,12 @@ export default {
       type: Object,
       default() {
         return null
+      }
+    },
+    permissions: {
+      type: Array,
+      default() {
+        return ['*']
       }
     }
   },
@@ -100,6 +107,12 @@ export default {
               default() {
                 return null
               }
+            },
+            permissions: {
+              type: Array,
+              default() {
+                return ['*']
+              }
             }
           },
           data() {
@@ -111,24 +124,25 @@ export default {
             if (this.component) {
               switch (this.component.type) {
                 case 'listView':
-                  this.renderComponent = (await import(`./listView/index.vue`)).default
+                  this.renderComponent = markRaw((await import(`./listView/index.vue`)).default)
                   break
                 case 'treeView':
-                  this.renderComponent = (await import(`./treeView/index.vue`)).default
+                  this.renderComponent = markRaw((await import(`./treeView/index.vue`)).default)
                   break
                 case 'searchForm':
-                  this.renderComponent = (await import(`./searchForm/index.vue`)).default
+                  this.renderComponent = markRaw((await import(`./searchForm/index.vue`)).default)
                   break
               }
             } else {
               console.log('component error')
             }
           },
-          render({ component, componentMap, viewData }) {
+          render({ component, componentMap, viewData, permissions }) {
             if (this.renderComponent && component) {
               return h(this.renderComponent, {
                 componentMap,
                 viewData,
+                permissions,
                 ...component
               })
             }
@@ -147,7 +161,7 @@ export default {
       this.$emit(event, data, cb)
     }
   }
-}
+})
 </script>
 
 <style></style>

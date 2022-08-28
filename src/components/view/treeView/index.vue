@@ -16,22 +16,22 @@
       "
       @node-drag-enter="
         (draggingNode, dropNode, event) => {
-          handleNodeDrag('dropEnter', { draggingNode, dropNode, event })
+          handleNodeDrag('dragEnter', { draggingNode, dropNode, event })
         }
       "
       @node-drag-leave="
         (draggingNode, dropNode, event) => {
-          handleNodeDrag('dropLeave', { draggingNode, dropNode, event })
+          handleNodeDrag('dragLeave', { draggingNode, dropNode, event })
         }
       "
       @node-drag-over="
         (draggingNode, dropNode, event) => {
-          handleNodeDrag('dropOver', { draggingNode, dropNode, event })
+          handleNodeDrag('dragOver', { draggingNode, dropNode, event })
         }
       "
       @node-drag-end="
         (draggingNode, dropNode, dropType, event) => {
-          handleNodeDrag('dropEnd', { draggingNode, dropNode, dropType, event })
+          handleNodeDrag('dragEnd', { draggingNode, dropNode, dropType, event })
         }
       "
       @node-drop="
@@ -46,7 +46,7 @@
           <div class="atp-treeview__action">
             <template v-for="btn in extras.operations">
               <el-button
-                v-if="getComponentDisplay(data, btn)"
+                v-if="getComponentDisplay(data, btn) && (isAdmin || checkPermission(btn.permission))"
                 :key="btn.buttonEvent"
                 :type="btn.buttonType"
                 @click.stop="handleBtnClick(btn.buttonEvent, data)"
@@ -63,10 +63,11 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import base from '../base.vue'
-import { isValueEqual } from '../../../utils/common'
+import { isValueEqual, getComponentStatus } from '../../../utils/common'
 
-export default {
+export default defineComponent({
   name: 'TreeView',
   extends: base,
   data() {
@@ -99,42 +100,14 @@ export default {
       return data.label.includes(value)
     },
     getComponentDisplay(row, item) {
-      let show = true
-      if (item && Array.isArray(item.showConfig) && item.showConfig.length) {
-        show = false
-        for (let i = 0; i < item.showConfig.length; i += 1) {
-          if (!show) {
-            for (let j = 0; j < item.showConfig[i].length; j += 1) {
-              const { field, value, logic } = item.showConfig[i][j]
-              const targetValue = row[field] || ''
-              switch (logic) {
-                case '0':
-                  if (!isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-                case '1':
-                  if (isValueEqual(targetValue, value)) {
-                    show = true
-                  } else {
-                    show = false
-                  }
-                  break
-              }
-            }
-          }
-        }
-      }
-      return show
+      return getComponentStatus(item.showConfig, row)
     },
     handleNodeDrag(type, dragData) {
       if (this.extras.draggableEvent) {
         this.onEvent(this.extras.draggableEvent, {
           ...dragData,
           eventType: type,
-          data: this.demo
+          data: this.value
         })
       }
     },
@@ -142,7 +115,7 @@ export default {
       this.onEvent(event, row)
     }
   }
-}
+})
 </script>
 
 <style lang="scss">

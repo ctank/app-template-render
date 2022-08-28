@@ -30,9 +30,9 @@ export default {
       }
     },
     showTitle: {
-      type: String,
+      type: Boolean,
       default() {
-        return '请输入'
+        return false
       }
     },
     title: {
@@ -59,6 +59,12 @@ export default {
       default() {
         return {}
       }
+    },
+    permissions: {
+      type: Array,
+      default() {
+        return ['*']
+      }
     }
   },
   data() {
@@ -80,12 +86,24 @@ export default {
     },
     validProp() {
       return this.fieldPath.replace(/\//g, '.')
+    },
+    isAdmin() {
+      if (!this.permissions || (Array.isArray(this.permissions) && this.permissions[0] === '*')) {
+        return true
+      }
+      return false
     }
   },
   watch: {
     // data() {}
   },
   methods: {
+    checkPermission(permission) {
+      if (!permission || this.permissions.includes(permission)) {
+        return true
+      }
+      return false
+    }
     // getValueByPath(data, path) {
     //   let value = ''
     //   if (data && path) {

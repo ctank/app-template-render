@@ -142,10 +142,54 @@ export const getComponentMap = (layouts, components) => {
   return obj
 }
 
+export const getComponentStatus = (componentConfig, data, componentMap) => {
+  let status = true
+  if (Array.isArray(componentConfig) && componentConfig.length) {
+    status = false
+    for (let i = 0; i < componentConfig.length; i += 1) {
+      let andStatus = true
+      if (!status && Array.isArray(componentConfig[i]) && componentConfig[i].length) {
+        for (let j = 0; j < componentConfig[i].length; j += 1) {
+          if (andStatus) {
+            const { field, value, logic, type } = componentConfig[i][j]
+            let fieldPath = ''
+            if (type === 'custom') {
+              fieldPath = field
+            } else {
+              if (componentMap && componentMap[field]) {
+                fieldPath = componentMap[field].fieldPath
+              }
+            }
+            const targetValue = getValueByPath(data, fieldPath)
+            switch (logic) {
+              case '0':
+                if (!isValueEqual(targetValue, value)) {
+                  andStatus = true
+                } else {
+                  andStatus = false
+                }
+                break
+              case '1':
+                if (isValueEqual(targetValue, value)) {
+                  andStatus = true
+                } else {
+                  andStatus = false
+                }
+                break
+            }
+          }
+        }
+      }
+      status = andStatus
+    }
+  }
+  return status
+}
+
 /**
- * [validEnglish 验证是否是英文]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validEnglish 验证是否是英文
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validEnglish = (value) => {
   if (value) {
@@ -155,9 +199,9 @@ export const validEnglish = (value) => {
 }
 
 /**
- * [validNumberOrEnglish 验证是否是数字或英文]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validNumberOrEnglish 验证是否是数字或英文
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validNumberOrEnglish = (value) => {
   if (value) {
@@ -167,9 +211,9 @@ export const validNumberOrEnglish = (value) => {
   return true
 }
 /**
- * [validEmail 验证是否是邮箱格式]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validEmail 验证是否是邮箱格式
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validEmail = (value) => {
   if (value) {
@@ -178,9 +222,9 @@ export const validEmail = (value) => {
   return true
 }
 /**
- * [validIdCard 验证是否是身份证格式]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validIdCard 验证是否是身份证格式
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validIdCard = (value) => {
   if (value) {
@@ -194,9 +238,9 @@ export const validIdCard = (value) => {
 }
 
 /**
- * [validPhone 验证是否是手机号码]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validPhone 验证是否是手机号码
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validPhone = (value) => {
   if (value) {
@@ -205,91 +249,9 @@ export const validPhone = (value) => {
   return true
 }
 /**
- * [validBankAccount 验证是否是银行卡号码]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
- */
-export const validBankAccount = (value) => {
-  // // code
-  // const getBankCardCheckCode = code => {
-  //   if (
-  //     code == null ||
-  //     code.replace(/(^\s*)|(\s*$)/g, '').length == 0 ||
-  //     !/\d+/.test(code)
-  //   ) {
-  //     return 'N'
-  //   }
-
-  //   const newArr = code.replace(/(^\s*)|(\s*$)/g, '').split('')
-  //   newArr.reverse()
-
-  //   var arrJiShu = []
-  //   var arrJiShu2 = []
-
-  //   var arrOuShu = []
-  //   for (var j = 0; j < newArr.length; j++) {
-  //     if ((j + 1) % 2 === 1) {
-  //       if (parseInt(newArr[j]) * 2 < 9) {
-  //         arrJiShu.push(parseInt(newArr[j]) * 2)
-  //       } else {
-  //         arrJiShu2.push(parseInt(newArr[j]) * 2)
-  //       }
-  //     } else {
-  //       arrOuShu.push(newArr[j])
-  //     }
-  //   }
-
-  //   var jishu_child1 = []
-  //   var jishu_child2 = []
-  //   for (var h = 0; h < arrJiShu2.length; h++) {
-  //     jishu_child1.push(parseInt(arrJiShu2[h]) % 10)
-  //     jishu_child2.push(parseInt(arrJiShu2[h]) / 10)
-  //   }
-
-  //   var sumJiShu = 0
-  //   var sumOuShu = 0
-  //   var sumJiShuChild1 = 0
-  //   var sumJiShuChild2 = 0
-  //   var sumTotal = 0
-  //   for (var m = 0; m < arrJiShu.length; m++) {
-  //     sumJiShu = sumJiShu + parseInt(arrJiShu[m])
-  //   }
-
-  //   for (var n = 0; n < arrOuShu.length; n++) {
-  //     sumOuShu = sumOuShu + parseInt(arrOuShu[n])
-  //   }
-
-  //   for (var p = 0; p < jishu_child1.length; p++) {
-  //     sumJiShuChild1 = sumJiShuChild1 + parseInt(jishu_child1[p])
-  //     sumJiShuChild2 = sumJiShuChild2 + parseInt(jishu_child2[p])
-  //   }
-  //   sumTotal =
-  //     parseInt(sumJiShu) +
-  //     parseInt(sumOuShu) +
-  //     parseInt(sumJiShuChild1) +
-  //     parseInt(sumJiShuChild2)
-
-  //   return 10 - (parseInt(sumTotal) % 10 === 0 ? 10 : parseInt(sumTotal) % 10)
-  // }
-
-  // if (value.length < 15 || value.length > 19) {
-  //   return false
-  // }
-  // const bit = getBankCardCheckCode(value.substr(0, value.length - 1))
-  // if (bit === 'N') {
-  //   return false
-  // }
-  // return parseInt(value.charAt(value.length - 1)) === bit
-  // TODO: 不确定以上算法是否准确，目前验证位数不对，先以位数来校验，后续精确匹配 by lijiacheng
-  if (value) {
-    return /^(\d{13,19})$/.test(value)
-  }
-  return true
-}
-/**
- * [validInteger 验证是否是整数]
- * @param {[String]} [value] [需要验证的值]
- * @return {[Boolean]} [验证结果]
+ * validInteger 验证是否是整数
+ * @param {String} value 需要验证的值
+ * @return {Boolean} 验证结果
  */
 export const validInteger = (value) => {
   if (value) {
@@ -299,10 +261,10 @@ export const validInteger = (value) => {
 }
 
 /**
- * [validFloat 验证是否是小数]
- * @param {[String]} [value] [需要验证的值]
- * @param {[Number]} [decimal] [小数位]
- * @return {[Boolean]} [验证结果]
+ * validFloat 验证是否是小数
+ * @param {String} value 需要验证的值
+ * @param {Number} decimal 小数位
+ * @return {Boolean} 验证结果
  */
 export const validFloat = (value, decimal = '') => {
   // console.log(value)
@@ -325,8 +287,8 @@ export const validFloat = (value, decimal = '') => {
 
 /**
  * 复制单行内容到粘贴板
- * content : 需要复制的内容
- * message : 复制完后的提示，不传则默认提示"复制成功"
+ * @param {String | Array} content 需要复制的内容
+ * @param {Function} cb 复制完后的回调，不传则默认提示"复制成功"
  */
 export const copyToClip = (contents, cb) => {
   let value = ''
@@ -345,22 +307,6 @@ export const copyToClip = (contents, cb) => {
       cb(true)
     })
   } else {
-    // // 创建text area
-    // let textArea = document.createElement('textarea')
-    // textArea.value = content
-    // // 使text area不在viewport，同时设置不可见
-    // textArea.style.position = 'absolute'
-    // textArea.style.opacity = '0'
-    // textArea.style.left = '-999999px'
-    // textArea.style.top = '-999999px'
-    // document.body.appendChild(textArea)
-    // textArea.focus()
-    // textArea.select()
-    // // 执行复制命令并移除文本框
-    // document.execCommand('copy')
-    // this.$message.success(`复制成功: ${this.content}`)
-    // textArea.remove()
-
     const textarea = document.createElement('textarea')
     textarea.value = value
     document.body.appendChild(textarea)
@@ -371,16 +317,4 @@ export const copyToClip = (contents, cb) => {
     document.body.removeChild(textarea)
     cb(true)
   }
-
-  // var aux = document.createElement('input')
-  // aux.setAttribute('value', content)
-  // document.body.appendChild(aux)
-  // aux.select()
-  // document.execCommand('copy')
-  // document.body.removeChild(aux)
-  // if (message == null) {
-  //   alert('复制成功')
-  // } else {
-  //   alert(message)
-  // }
 }

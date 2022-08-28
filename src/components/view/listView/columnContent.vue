@@ -6,11 +6,12 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import Tag from './tag.vue'
 
 const dayjs = require('dayjs')
 
-export default {
+export default defineComponent({
   name: 'ColumnContent',
   components: { Tag },
   props: {
@@ -52,7 +53,7 @@ export default {
       return c
     }
   }
-}
+})
 </script>
 
 <style></style>

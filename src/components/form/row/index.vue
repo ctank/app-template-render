@@ -13,9 +13,10 @@
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import base from '../base.vue'
 
-export default {
+export default defineComponent({
   name: 'Row',
   extends: base,
   props: {
@@ -26,7 +27,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style></style>
