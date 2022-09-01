@@ -158,9 +158,13 @@ export const getComponentStatus = (componentConfig, data, componentMap) => {
             } else {
               if (componentMap && componentMap[field]) {
                 fieldPath = componentMap[field].fieldPath
+              } else {
+                fieldPath = field
               }
             }
+
             const targetValue = getValueByPath(data, fieldPath)
+
             switch (logic) {
               case '0':
                 if (!isValueEqual(targetValue, value)) {

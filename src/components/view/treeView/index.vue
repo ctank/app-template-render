@@ -1,5 +1,6 @@
 <template>
   <div class="atp-treeview">
+    <div class="atp-treeview__title" v-if="showTitle">{{ title }}</div>
     <el-input class="atp-treeview__search" v-if="extras.filter" v-model="filterText" />
     <el-tree
       ref="treeRef"
@@ -42,11 +43,13 @@
     >
       <template #default="{ node, data }">
         <div class="atp-treeview__node">
-          <div class="atp-treeview__title">{{ node.label }}</div>
-          <div class="atp-treeview__action">
+          <div class="atp-treeview__node-title">{{ node.label }}</div>
+          <div class="atp-treeview__node-action">
             <template v-for="btn in extras.operations">
               <el-button
-                v-if="getComponentDisplay(data, btn) && (isAdmin || checkPermission(btn.permission))"
+                v-if="
+                  getComponentDisplay(data, btn) && (isAdmin || checkPermission(btn.permission))
+                "
                 :key="btn.buttonEvent"
                 :type="btn.buttonType"
                 @click.stop="handleBtnClick(btn.buttonEvent, data)"
@@ -120,8 +123,9 @@ export default defineComponent({
 
 <style lang="scss">
 .atp-treeview {
+  .atp-treeview__title,
   .atp-treeview__search {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
   .atp-treeview__node {
     display: flex;

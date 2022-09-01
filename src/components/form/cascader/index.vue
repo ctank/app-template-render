@@ -17,7 +17,7 @@
 <script>
 import { defineComponent } from 'vue'
 import {
-  provinceAndCityData,
+  provinceAndCityData
   // regionData,
   // provinceAndCityDataPlus,
   // regionDataPlus,

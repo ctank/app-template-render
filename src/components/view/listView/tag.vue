@@ -20,8 +20,8 @@ export default {
     }
   },
 
-  computed:{
-    style(){
+  computed: {
+    style() {
       return `color:${this.color};background-color:${this.hex2Rgba(this.color, 0.1)};`
     }
   },
@@ -32,17 +32,17 @@ export default {
         return
       }
       let newColor = color.toLowerCase().replace(/\#/g, '')
-      let len = newColor.length
-      if (len == 3) {
+      if (newColor.length === 3) {
         let t = ''
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < newColor.length; i++) {
           t += newColor.slice(i, i + 1).concat(newColor.slice(i, i + 1))
         }
         newColor = t
       }
-      let arr = [] //将字符串分隔，两个两个的分隔
-      for (var i = 0; i < 6; i = i + 2) {
-        let s = newColor.slice(i, i + 2)
+      // 将字符串分隔，两个两个的分隔
+      const arr = []
+      for (let i = 0; i < 6; i = i + 2) {
+        const s = newColor.slice(i, i + 2)
         arr.push(parseInt('0x' + s))
       }
       return `rgba(${arr.join(',')},${alpha})`
