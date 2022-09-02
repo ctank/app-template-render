@@ -93,7 +93,10 @@ export default defineComponent({
       return '*'
     },
     disabledUpload() {
-      if (this.extras.maxLimit > 1 && this.value.length === this.extras.maxLimit) {
+      if (
+        (this.extras.maxLimit > 1 && this.value.length === this.extras.maxLimit) ||
+        this.disabled
+      ) {
         return true
       }
       return false

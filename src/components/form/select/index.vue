@@ -8,9 +8,10 @@
     <el-select
       v-model="value"
       :placeholder="placeholder"
-      clearable
       :multiple="extras.multiple"
       :multiple-limit="multipleLimit"
+      :disabled="disabled"
+      clearable
     >
       <el-option
         v-for="(option, index) in filterOptions"

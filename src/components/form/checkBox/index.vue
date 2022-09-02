@@ -10,11 +10,11 @@
       v-if="extras.checkAll"
       v-model="checkAll"
       :indeterminate="isIndeterminate"
+      :disabled="disabled"
       @change="handleCheckAllChange"
       >全选</el-checkbox
     >
-
-    <el-checkbox-group v-model="value" @change="handleValueChange">
+    <el-checkbox-group v-model="value" :disabled="disabled" @change="handleValueChange">
       <el-checkbox
         :label="option.value"
         v-for="(option, index) in filterOptions"

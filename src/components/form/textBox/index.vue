@@ -5,7 +5,7 @@
     :prop="validProp"
     :rules="rules"
   >
-    <el-input v-model="value" :placeholder="placeholder" clearable />
+    <el-input v-model="value" :placeholder="placeholder" clearable :disabled="disabled" />
   </el-form-item>
 </template>
 

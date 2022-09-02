@@ -64,6 +64,13 @@ export default {
       default() {
         return {}
       }
+    },
+    // 禁用
+    disabled: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data() {

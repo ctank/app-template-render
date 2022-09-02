@@ -84,7 +84,10 @@ export default defineComponent({
       return `height:${this.extras.height}px;width:${this.extras.width}px;`
     },
     disabledUpload() {
-      if (this.extras.maxLimit > 1 && this.value.length === this.extras.maxLimit) {
+      if (
+        (this.extras.maxLimit > 1 && this.value.length === this.extras.maxLimit) ||
+        this.disabled
+      ) {
         return true
       }
       return false
@@ -226,13 +229,17 @@ export default defineComponent({
       }
 
       if (this.extras.actionConfig.success) {
-        this.onEvent(this.extras.actionConfig.success, {
-          file,
-          res,
-          id: this.id,
-          fieldPath: this.fieldPath
-        }, successFun)
-      }else{
+        this.onEvent(
+          this.extras.actionConfig.success,
+          {
+            file,
+            res,
+            id: this.id,
+            fieldPath: this.fieldPath
+          },
+          successFun
+        )
+      } else {
         successFun(file)
       }
     },

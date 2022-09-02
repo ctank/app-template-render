@@ -4,7 +4,7 @@
       role="button"
       data-type="decrease"
       class="el-input-number__decrease"
-      :class="{ 'is-disabled': modelValue <= min }"
+      :class="{ 'is-disabled': modelValue <= min || disabled }"
       @mousedown="handleValueChange"
     >
       <el-icon><Minus /></el-icon>
@@ -13,7 +13,7 @@
       role="button"
       data-type="increase"
       class="el-input-number__increase"
-      :class="{ 'is-disabled': modelValue >= max }"
+      :class="{ 'is-disabled': modelValue >= max || disabled }"
       @mousedown="handleValueChange"
     >
       <el-icon><Plus /></el-icon>
@@ -21,6 +21,7 @@
     <el-input
       v-model="inputValue"
       class="input-with-select"
+      :disabled="disabled"
       @focus="handleInputFocus"
       @blur="handleInputBlur"
       @input="handleValueInput"
@@ -70,6 +71,13 @@ export default defineComponent({
     precision: {
       type: Number,
       validator: (val) => val >= 0 && val === Number.parseInt(`${val}`, 10)
+    },
+    // 禁用
+    disabled: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data() {
@@ -166,7 +174,7 @@ export default defineComponent({
       let isHandlerCalled = false
 
       const handler = () => {
-        let currentElm = e.path.find((item) => item.dataset.type)
+        const currentElm = e.path.find((item) => item.dataset.type)
         let val = this.modelValue
         if (currentElm.dataset.type === 'decrease') {
           val--

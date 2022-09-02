@@ -15,6 +15,7 @@
       :valueFormat="extras.format"
       :disabled-date="disabledDate"
       :placeholder="placeholder"
+      :disabled="disabled"
     />
     <!-- 时间 -->
     <el-time-picker
@@ -27,6 +28,7 @@
       :disabled-minutes="disabledMinutes"
       :disabled-seconds="disabledSeconds"
       :placeholder="placeholder"
+      :disabled="disabled"
     />
     <!-- 时间选择 -->
     <el-time-select
@@ -36,6 +38,7 @@
       :end="extras.max.value || '23:59'"
       :step="extras.timeStep || '00:01'"
       :placeholder="placeholder"
+      :disabled="disabled"
     />
   </el-form-item>
 </template>

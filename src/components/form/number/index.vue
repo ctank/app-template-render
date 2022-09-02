@@ -12,6 +12,7 @@
       :max="extras.max || Number.POSITIVE_INFINITY"
       :precision="extras.precision"
       :step="extras.step"
+      :disabled="disabled"
     />
     <text-input
       v-else
@@ -22,6 +23,7 @@
       :precision="extras.precision"
       :step="extras.step"
       :showText="extras.showText"
+      :disabled="disabled"
     />
   </el-form-item>
 </template>

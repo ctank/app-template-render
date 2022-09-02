@@ -7,6 +7,7 @@
         :formData="formData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
+        :disabled="getComponentDisabled(componentMap[item.id])"
       />
     </template>
   </div>
@@ -144,6 +145,13 @@ export default defineComponent({
         }
       }
       return show
+    },
+    getComponentDisabled(item) {
+      let disabled = false
+      if (item && !LAYOUT_TYPES.includes(item.type)) {
+        disabled = getComponentStatus(item.extras.readonlyConfig, this.formData, this.componentMap, disabled)
+      }
+      return disabled
     },
     handleValueChange(val, id) {
       this.$emit('change', val, id)

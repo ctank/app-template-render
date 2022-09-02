@@ -13,8 +13,9 @@
       :autosize="extras.autosize"
       :resize="extras.resize"
       :show-word-limit="extras.showWordLimit"
-      type="textarea"
       :placeholder="placeholder"
+      :disabled="disabled"
+      type="textarea"
     />
   </el-form-item>
 </template>

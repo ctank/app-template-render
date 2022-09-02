@@ -9,6 +9,7 @@
       v-model="value"
       :options="provinceAndCityData"
       :placeholder="placeholder"
+      :disabled="disabled"
       clearable
     ></el-cascader>
   </el-form-item>

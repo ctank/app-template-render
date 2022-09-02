@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="title" :class="required ? 'is-required' : ''">
-    <el-radio-group v-model="value">
+    <el-radio-group v-model="value" :disabled="disabled">
       <el-radio
         v-for="(option, index) in showOptions"
         :key="`${index}-${option.value}`"

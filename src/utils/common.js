@@ -142,8 +142,7 @@ export const getComponentMap = (layouts, components) => {
   return obj
 }
 
-export const getComponentStatus = (componentConfig, data, componentMap) => {
-  let status = true
+export const getComponentStatus = (componentConfig, data, componentMap, status = true) => {
   if (Array.isArray(componentConfig) && componentConfig.length) {
     status = false
     for (let i = 0; i < componentConfig.length; i += 1) {
