@@ -89,6 +89,9 @@ export default defineComponent({
               case 'row':
                 this.renderComponent = markRaw((await import(`./row/index.vue`)).default)
                 break
+              case 'tabs':
+                this.renderComponent = markRaw((await import(`./tabs/index.vue`)).default)
+                break
               case 'textBox':
                 this.renderComponent = markRaw((await import(`./textBox/index.vue`)).default)
                 break
