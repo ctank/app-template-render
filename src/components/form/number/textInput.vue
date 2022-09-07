@@ -6,6 +6,7 @@
       class="el-input-number__decrease"
       :class="{ 'is-disabled': modelValue <= min || disabled }"
       @mousedown="handleValueChange"
+      v-if="!disabled"
     >
       <el-icon><Minus /></el-icon>
     </span>
@@ -15,6 +16,7 @@
       class="el-input-number__increase"
       :class="{ 'is-disabled': modelValue >= max || disabled }"
       @mousedown="handleValueChange"
+      v-if="!disabled"
     >
       <el-icon><Plus /></el-icon>
     </span>
@@ -27,12 +29,15 @@
       @input="handleValueInput"
       @keypress="validKeyCode"
     >
-      <template #suffix>
+      <template #suffix v-if="!disabled">
         <el-icon class="el-input-amount__copy" @click="handleValueCopy(inputValue)"
           ><CopyDocument
         /></el-icon>
       </template>
     </el-input>
+    <span class="el-input-amount__button" v-if="disabled" @click="handleValueCopy(inputValue)">
+      <el-icon><CopyDocument /></el-icon>
+    </span>
   </div>
 </template>
 
@@ -258,6 +263,31 @@ export default defineComponent({
 </script>
 
 <style>
+.el-input-number.atr-number-amount {
+  display: flex;
+}
+
+.atr-number-amount .el-input-amount__button {
+  right: 1px;
+  border-radius: 0 var(--el-border-radius-base) var(--el-border-radius-base) 0;
+  border-left: var(--el-border);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  position: absolute;
+  z-index: 1;
+  top: 1px;
+  bottom: 1px;
+  width: 32px;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  font-size: 13px;
+  user-select: none;
+}
+
 .atr-number-amount .el-input-amount__copy {
   cursor: pointer;
 }
