@@ -43,7 +43,23 @@
     >
       <template #default="{ node, data }">
         <div class="atp-treeview__node">
-          <div class="atp-treeview__node-title">{{ node.label }}</div>
+          <div
+            v-if="extras.displaySet && extras.displaySet.length"
+            class="atp-treeview__node-title"
+          >
+            <template v-for="(item, index) in extras.displaySet">
+              <span class="mr-1" v-if="item.fieldType === 'option'" :key="`tree-option-${index}`">
+                {{ getValueByPath(item, data) }}
+              </span>
+
+              <span class="mr-1" v-else :key="`tree-text-${index}`">
+                {{ getValueByPath(item, data) }}
+              </span>
+            </template>
+          </div>
+          <div v-else class="atp-treeview__node-title">
+            {{ node.label }}
+          </div>
           <div class="atp-treeview__node-action">
             <template v-for="btn in extras.operations">
               <el-button
@@ -68,7 +84,7 @@
 <script>
 import { defineComponent } from 'vue'
 import base from '../base.vue'
-import { isValueEqual, getComponentStatus } from '../../../utils/common'
+import { getValueByPath, getComponentStatus } from '../../../utils/common'
 
 export default defineComponent({
   name: 'TreeView',
@@ -104,6 +120,20 @@ export default defineComponent({
     },
     getComponentDisplay(row, item) {
       return getComponentStatus(item.showConfig, row)
+    },
+    getValueByPath(item, data) {
+      let value = getValueByPath(data, item.fieldPath)
+      if (item.fieldType !== 'option') {
+        return value
+      }
+
+      for (let i = 0; i < item.fieldFormat.length; i++) {
+        if (item.fieldFormat[i].value === value) {
+          value = item.fieldFormat[i].label
+          break
+        }
+      }
+      return value
     },
     handleNodeDrag(type, dragData) {
       if (this.extras.draggableEvent) {
