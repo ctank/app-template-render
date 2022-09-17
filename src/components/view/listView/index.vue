@@ -41,7 +41,11 @@
           :align="column.align || 'left'"
         >
           <template #default="{ row, $index }">
-            <column-content :row="row" :column="column" />
+            <column-content
+              :row="row"
+              :column="column"
+              @click="handleColBtnClick(column.clickEvent, row)"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -147,7 +151,11 @@ export default defineComponent({
       this.onEvent(event, data)
     },
     handleColBtnClick(event, row) {
-      this.onEvent(event, row)
+      if (event) {
+        this.onEvent(event, row)
+      } else {
+        console.log('未配置相关事件')
+      }
     },
     handlePaginationCurrentChange(val) {
       this.onEvent('currentChange', val)

@@ -1,5 +1,10 @@
 <template>
-  <div class="atp-listview__column">
+  <div
+    :class="{
+      'atp-listview__column': true,
+      'atp-listview__column--click': column.clickEvent
+    }"
+  >
     <span v-if="!config.isTag">{{ config.content }}</span>
     <tag v-else :color="config.color">{{ config.content }}</tag>
   </div>
@@ -56,4 +61,10 @@ export default defineComponent({
 })
 </script>
 
-<style></style>
+<style lang="less">
+.atp-listview__column {
+  &.atp-listview__column--click {
+    cursor: pointer;
+  }
+}
+</style>

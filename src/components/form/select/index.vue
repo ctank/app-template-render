@@ -11,6 +11,10 @@
       :multiple="extras.multiple"
       :multiple-limit="multipleLimit"
       :disabled="disabled"
+      :filterable="filterOption.filterable"
+      :remote="filterOption.remote"
+      :remoteMethod="filterOption.remoteMethod"
+      :loading="loading"
       clearable
     >
       <el-option
@@ -50,7 +54,8 @@ export default defineComponent({
   data() {
     return {
       filterOptions: [],
-      relateOptionFieldValue: ''
+      relateOptionFieldValue: '',
+      loading: false
     }
   },
   computed: {
@@ -70,6 +75,21 @@ export default defineComponent({
         }
       }
       return limit
+    },
+    filterOption() {
+      const option = {
+        filterable: false,
+        remote: false
+      }
+
+      if (this.extras.filterable) {
+        option.filterable = true
+        if (this.extras.dataSource === 'api') {
+          option.remote = true
+          option.remoteMethod = this.remoteFilter
+        }
+      }
+      return option
     }
   },
   watch: {
@@ -180,7 +200,7 @@ export default defineComponent({
     setFilterOptions() {
       const self = this
       let options = []
-      if (this.extras.dataSource === 'api') {
+      if (this.extras.dataSource === 'api' && !this.extras.filterable) {
         if (this.relateOptionFieldValue !== this.relateValue) {
           this.relateOptionFieldValue = this.relateValue
         }
@@ -212,6 +232,31 @@ export default defineComponent({
         }
       }
       this.filterOptions = options
+    },
+
+    remoteFilter(query) {
+      if (query) {
+        this.loading = true
+        const self = this
+        const paths = this.fieldPath.split('/')
+        this.onGetValue(
+          {
+            id: this.id,
+            field: paths[paths.length - 1] || '',
+            relateValue: query
+          },
+          (options) => {
+            this.loading = false
+            if (Array.isArray(options)) {
+              setTimeout(() => {
+                self.filterOptions = options
+              }, 0)
+            }
+          }
+        )
+      } else {
+        this.filterOptions = []
+      }
     }
 
     // onChange(val) {
