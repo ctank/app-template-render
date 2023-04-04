@@ -1,6 +1,6 @@
 <template>
   <el-form-item
-    :label="title"
+    :label="showTitle ? title : ''"
     :class="required ? 'is-required' : ''"
     :prop="validProp"
     :rules="rules"
@@ -35,7 +35,12 @@ export default defineComponent({
         return ''
       }
     },
-
+    showTitle: {
+      type: Boolean,
+      default() {
+        return true
+      }
+    },
     required: {
       type: Boolean,
       default() {

@@ -95,7 +95,7 @@ export const getValueByPath = (data, path) => {
       }
     }
   }
-  return value || ''
+  return value
 }
 
 export const setValueByPath = (data, path, val) => {
@@ -296,7 +296,7 @@ export const validFloat = (value, decimal = '') => {
 export const copyToClip = (contents, cb) => {
   let value = ''
   if (Array.isArray(contents)) {
-    for (var i = 0; i < contents.length; i++) {
+    for (let i = 0; i < contents.length; i++) {
       value += contents[i] + '\n'
     }
   } else {
@@ -307,7 +307,8 @@ export const copyToClip = (contents, cb) => {
   if (navigator.clipboard && window.isSecureContext) {
     // navigator clipboard 向剪贴板写文本
     navigator.clipboard.writeText(value).then(() => {
-      cb(true)
+      const flag = true
+      cb(flag)
     })
   } else {
     const textarea = document.createElement('textarea')
@@ -318,6 +319,7 @@ export const copyToClip = (contents, cb) => {
       document.execCommand('copy')
     }
     document.body.removeChild(textarea)
-    cb(true)
+    const flag = true
+    cb(flag)
   }
 }

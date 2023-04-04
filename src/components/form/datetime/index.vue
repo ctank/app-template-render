@@ -1,6 +1,6 @@
 <template>
   <el-form-item
-    :label="title"
+    :label="showTitle ? title : ''"
     :class="required ? 'is-required' : ''"
     class="atr-datetime"
     :prop="validProp"
@@ -94,6 +94,12 @@ export default defineComponent({
       type: String,
       default() {
         return ''
+      }
+    },
+    showTitle: {
+      type: Boolean,
+      default() {
+        return true
       }
     },
     required: {

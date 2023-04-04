@@ -58,8 +58,29 @@
         >
           <template #default="{ row, $index }">
             <template v-for="btn in column.actionConfig">
+              <el-popconfirm
+                v-if="
+                  (btn.buttonType === 'warning' || btn.buttonType === 'danger') &&
+                  btn.buttonPopTips &&
+                  getComponentDisplay(row, btn) &&
+                  (isAdmin || checkPermission(btn.permission))
+                "
+                :key="`${btn.buttonEvent}_tips`"
+                :title="btn.buttonPopTips"
+                :confirm-button-type="btn.buttonType"
+                @confirm="handleColBtnClick(btn.buttonEvent, row)"
+              >
+                <template #reference>
+                  <el-button :type="btn.buttonType" link>
+                    {{ btn.buttonName }}
+                  </el-button>
+                </template>
+              </el-popconfirm>
+
               <el-button
-                v-if="getComponentDisplay(row, btn) && (isAdmin || checkPermission(btn.permission))"
+                v-else-if="
+                  getComponentDisplay(row, btn) && (isAdmin || checkPermission(btn.permission))
+                "
                 :key="btn.buttonEvent"
                 :type="btn.buttonType"
                 link

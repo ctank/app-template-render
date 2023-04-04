@@ -122,6 +122,9 @@ export default defineComponent({
               case 'fileUpload':
                 this.renderComponent = markRaw((await import(`./fileUpload/index.vue`)).default)
                 break
+              case 'subForm':
+                this.renderComponent = markRaw((await import(`./subForm/index.vue`)).default)
+                break
             }
           },
           render({ component, componentMap, formData }) {
@@ -152,7 +155,12 @@ export default defineComponent({
     getComponentDisabled(item) {
       let disabled = false
       if (item && !LAYOUT_TYPES.includes(item.type)) {
-        disabled = getComponentStatus(item.extras.readonlyConfig, this.formData, this.componentMap, disabled)
+        disabled = getComponentStatus(
+          item.extras.readonlyConfig,
+          this.formData,
+          this.componentMap,
+          disabled
+        )
       }
       return disabled
     },

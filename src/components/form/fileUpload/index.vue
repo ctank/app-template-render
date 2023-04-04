@@ -1,6 +1,6 @@
 <template>
   <el-form-item
-    :label="title"
+    :label="showTitle ? title : ''"
     :class="required ? 'is-required' : ''"
     :prop="validProp"
     :rules="rules"
@@ -21,7 +21,7 @@
       </el-upload>
 
       <file-list
-        v-if="value.length"
+        v-if="value.length && !tempVal"
         class="atp-file-upload__list"
         :width="extras.width"
         :height="extras.height"
@@ -48,6 +48,12 @@ export default defineComponent({
       type: String,
       default() {
         return ''
+      }
+    },
+    showTitle: {
+      type: Boolean,
+      default() {
+        return true
       }
     },
     required: {
@@ -166,8 +172,10 @@ export default defineComponent({
       }
     },
     setDefaultValue() {
-      if (!this.value) {
-        this.onChange([], this.id)
+      if (!Array.isArray(this.value)) {
+        this.value = []
+      } else if (typeof this.value === 'string') {
+        this.value = [this.value]
       }
     },
     beforeUpload(file) {

@@ -157,8 +157,10 @@ export default defineComponent({
       }
     },
     setDefaultValue() {
-      if (!this.value) {
-        this.onChange([], this.id)
+      if (!Array.isArray(this.value)) {
+        this.value = []
+      } else if (typeof this.value === 'string') {
+        this.value = [this.value]
       }
     },
     beforeUpload(file) {

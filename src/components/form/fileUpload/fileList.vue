@@ -68,14 +68,14 @@ export default defineComponent({
   created() {},
   methods: {
     getFileTypeIconSrc(file) {
-      let src = FILE_TYPE_ICONS.file
+      let src = FILE_TYPE_ICONS.default
       const extIndex = file.name.lastIndexOf('.')
       if (extIndex >= 0) {
         const extName = file.name.substr(extIndex + 1)
         if (FILE_EXT_ICONS[extName.toLowerCase()]) {
           src = FILE_EXT_ICONS[extName.toLowerCase()]
         } else {
-          for (let key in FILE_TYPES) {
+          for (const key in FILE_TYPES) {
             if (FILE_TYPES[key].includes(extName)) {
               src = FILE_TYPE_ICONS[key]
             }
@@ -113,6 +113,9 @@ export default defineComponent({
     }
     .atp-file-list__title {
       flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       span {
         cursor: pointer;
       }

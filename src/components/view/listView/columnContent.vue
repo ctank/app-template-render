@@ -35,7 +35,7 @@ export default defineComponent({
   },
   computed: {
     config() {
-      const value = this.row[this.column.fieldPath] || ''
+      const value = this.row[this.column.fieldPath]
       const c = {
         content: '',
         isTag: false,
@@ -46,7 +46,7 @@ export default defineComponent({
       } else if (this.column.fieldType === 'datetime') {
         c.content = dayjs(value).format(this.column.format || 'YYYY-MM-DD HH:mm:ss')
       } else if (this.column.fieldType === 'option') {
-        const item = (this.column.options || []).find((option) => option.value === value)
+        const item = (this.column.options || []).find((option) => option.value === value + '')
         if (item) {
           c.content = item.label
           if (item.color) {

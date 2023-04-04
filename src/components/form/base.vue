@@ -71,6 +71,13 @@ export default {
       default() {
         return false
       }
+    },
+    // 临时值
+    tempVal: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data() {
@@ -87,7 +94,11 @@ export default {
         return value
       },
       set(val) {
-        this.onChange(val, this.id)
+        if (this.tempVal) {
+          this.$emit('tempChange', val, this.id)
+        } else {
+          this.onChange(val, this.id)
+        }
       }
     },
     validProp() {
