@@ -58,6 +58,13 @@ export default {
         return {}
       }
     },
+    // 子表单控件集合
+    subFormComponents: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
     // 数据
     formData: {
       type: Object,

@@ -12,6 +12,8 @@ const install = function (Vue) {
   }
 }
 
+window.ATP_VERSION = '0.1.15'
+
 // To allow use as module (npm/webpack/etc.) export component
 export default { install, FormRender, ViewRender, Utils }
 

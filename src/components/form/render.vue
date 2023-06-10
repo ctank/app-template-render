@@ -7,6 +7,7 @@
         :formData="formData"
         :component="componentMap[item.id]"
         :componentMap="componentMap"
+        :subFormComponents="subFormComponents"
         :disabled="getComponentDisabled(componentMap[item.id])"
       />
     </template>
@@ -40,12 +41,18 @@ export default defineComponent({
         return []
       }
     },
+    subFormComponents: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
     formData: {
       type: Object,
       default() {
         return null
       }
-    }
+    },
   },
   computed: {
     componentMap() {
@@ -127,11 +134,12 @@ export default defineComponent({
                 break
             }
           },
-          render({ component, componentMap, formData }) {
+          render({ component, componentMap, formData, subFormComponents }) {
             if (this.renderComponent && component) {
               return h(this.renderComponent, {
-                componentMap: componentMap,
-                formData: formData,
+                componentMap,
+                formData,
+                subFormComponents,
                 ...component
               })
             }

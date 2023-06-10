@@ -25,7 +25,7 @@
     <form-component-render
       v-else-if="getComponentDisplay"
       :formData="row"
-      :component="column.fieldConfig"
+      :component="columnComponent"
       :componentMap="componentMap"
       :disabled="getComponentDisabled"
       :tempVal="true"
@@ -88,18 +88,18 @@ export default defineComponent({
   },
   computed: {
     config() {
-      const value = this.row[this.column.fieldPath] || ''
+      const value = this.row[this.columnComponent.fieldPath] || ''
       const c = {
         content: '',
         type: 'text',
         color: ''
       }
-      if (TEXT_FIELDS.includes(this.column.fieldType)) {
+      if (TEXT_FIELDS.includes(this.column.fieldSet.type)) {
         c.content = value
-      } else if (DATETIME_FIELDS.includes(this.column.fieldType)) {
-        const format = this.column.fieldConfig?.extras.format || 'YYYY-MM-DD HH:mm:ss'
+      } else if (DATETIME_FIELDS.includes(this.column.fieldSet.type)) {
+        const format = this.columnComponent?.extras.format || 'YYYY-MM-DD HH:mm:ss'
         c.content = dayjs(value).format(format || 'YYYY-MM-DD HH:mm:ss')
-      } else if (OPTION_FIELDS.includes(this.column.fieldType)) {
+      } else if (OPTION_FIELDS.includes(this.column.fieldSet.type)) {
         const options = this.column.fieldConfig?.extras.options || []
         const item = options.find((option) => option.value === value)
         if (item) {
@@ -109,7 +109,7 @@ export default defineComponent({
             c.color = item.color
           }
         }
-      } else if (FILE_FIELDS.includes(this.column.fieldType)) {
+      } else if (FILE_FIELDS.includes(this.column.fieldSet.type)) {
         c.type = 'file'
         c.content = value
         if (typeof value === 'string') {
@@ -124,6 +124,11 @@ export default defineComponent({
         }
       }
       return c
+    },
+    columnComponent() {
+      const conponent = this.componentMap[this.column.fieldSet.componentId]
+      conponent.showTitle = false
+      return conponent
     },
     getComponentDisplay() {
       let show = true
@@ -171,7 +176,7 @@ export default defineComponent({
       return src
     },
     handleValueChange(val) {
-      const { fieldPath } = this.column
+      const { fieldPath } = this.columnComponent
       if (fieldPath && Object.prototype.toString.call(val) !== '[object event]') {
         this.row[fieldPath] = val
       }

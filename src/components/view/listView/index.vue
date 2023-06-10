@@ -175,7 +175,7 @@ export default defineComponent({
       if (event) {
         this.onEvent(event, row)
       } else {
-        console.log('未配置相关事件')
+        // console.log('未配置相关事件')
       }
     },
     handlePaginationCurrentChange(val) {

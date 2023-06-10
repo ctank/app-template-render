@@ -183,8 +183,15 @@ export default defineComponent({
     columnComponentMap() {
       const obj = {}
       this.extras.columns.forEach((column) => {
-        if (column.type === 'field' && column.fieldType && column.fieldConfig) {
-          obj[column.fieldConfig.id] = column.fieldConfig
+        if (
+          column.type === 'field' &&
+          column.fieldSet &&
+          column.fieldSet.type &&
+          column.fieldSet.componentId
+        ) {
+          obj[column.fieldSet.componentId] = this.subFormComponents.find(
+            (item) => item.id === column.fieldSet.componentId
+          )
         }
       })
       return obj
@@ -402,7 +409,7 @@ export default defineComponent({
       if (event) {
         this.onEvent(event, row)
       } else {
-        console.log('未配置相关事件')
+        // console.log('未配置相关事件')
       }
     },
     handlePaginationCurrentChange(val) {
