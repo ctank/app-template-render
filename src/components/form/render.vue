@@ -9,7 +9,15 @@
         :componentMap="componentMap"
         :subFormComponents="subFormComponents"
         :disabled="getComponentDisabled(componentMap[item.id])"
-      />
+      >
+
+
+        <template v-for="(key, i) in slotKeys" :key="key" v-slot:[key]="data">
+          <slot :name="key" v-bind="data"></slot>
+        </template>
+
+
+      </form-component-render>
     </template>
   </div>
 </template>
@@ -52,7 +60,12 @@ export default defineComponent({
       default() {
         return null
       }
-    },
+    }
+  },
+  data() {
+    return {
+      slotKeys: []
+    }
   },
   computed: {
     componentMap() {
@@ -61,6 +74,8 @@ export default defineComponent({
   },
   created() {
     this.registerRenderFun()
+    debugger
+    this.slotKeys = Object.keys(this.$slots)
   },
   methods: {
     registerRenderFun() {
@@ -99,6 +114,9 @@ export default defineComponent({
               case 'tabs':
                 this.renderComponent = markRaw((await import(`./tabs/index.vue`)).default)
                 break
+              case 'slot':
+                this.renderComponent = markRaw((await import(`./slot/index.vue`)).default)
+                break
               case 'textBox':
                 this.renderComponent = markRaw((await import(`./textBox/index.vue`)).default)
                 break
@@ -134,14 +152,41 @@ export default defineComponent({
                 break
             }
           },
-          render({ component, componentMap, formData, subFormComponents }) {
+          render({ component, componentMap, formData, subFormComponents, $slots }) {
             if (this.renderComponent && component) {
-              return h(this.renderComponent, {
-                componentMap,
-                formData,
-                subFormComponents,
-                ...component
-              })
+              
+              // if(component.type === 'slot'){
+
+                const children = {}
+                if($slots[component.slotName]){
+                  children[component.slotName] = (props) => {
+                    return $slots[component.slotName](props.data)
+                  }
+                }
+
+
+
+                return h(this.renderComponent, {
+                  componentMap,
+                  formData,
+                  subFormComponents,
+                  ...component
+                }, children)
+                
+                
+                
+                
+                
+                // [h('template', {
+                //   slot: component.slotName
+                // }, $slots[component.slotName]())] : [])
+              // }
+              // return h(this.renderComponent, {
+              //   componentMap,
+              //   formData,
+              //   subFormComponents,
+              //   ...component
+              // })
             }
             return h('div')
           }
